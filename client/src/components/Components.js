@@ -7,6 +7,8 @@ import {
 } from "react-router-dom";
 import SignUp from "./Login/SignUp"; 
 import Login from "./Login/Login";
+import Homepage from "./Homepage/Homepage";
+import Cart from "./Cart/Cart";
 
 export default function Components() {
   return (
@@ -14,6 +16,8 @@ export default function Components() {
       <Switch>
         <Route path="/login" component={Login} />
         <Route path="/register" component={SignUp} />
+        <Route path="/home" component={Homepage} />
+        <Route path="/cart" component={Cart} />
         <Redirect to="/login" />
       </Switch>
     </Router>

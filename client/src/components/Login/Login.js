@@ -3,12 +3,15 @@ import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
-import Navbar from './Navbar';
+import Navbar2 from './Navbar2';
+
+
 
 export default function Login() {
   return (
+
     <div>
-      <Navbar/>
+      <Navbar2/>
       <Grid
         container
         direction="column"
@@ -16,9 +19,11 @@ export default function Login() {
         alignItems="center"
         rowSpacing={2}
       >
-        <Grid item xs={6}>
-          <img width ={500} height={500} src={require('./nd.png')}/>
-        </Grid>
+      <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
+
+      </Grid>
+      <img src={require('./login_image.PNG')} alt="Login-pic" width="100%"/>
+ 
         <Grid item xs={4}>
           <TextField
             required
@@ -38,6 +43,7 @@ export default function Login() {
         <Grid item xs={4}>
           <Button variant="outlined">Login</Button>         
         </Grid>
+        <p textAlign="center">or</p>
         <Grid item xs={4}>
           <Link to="/register">
             <Button variant="contained">Sign Up</Button>
