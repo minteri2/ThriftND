@@ -2,10 +2,14 @@ import React from "react";
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
+import Navbar2 from './Navbar2';
 
 export default function SignUp() {
   return (
-    <div>
+    <div >
+     
+      <Navbar2/>
+
       <Grid
         container
         direction="column"
@@ -13,9 +17,12 @@ export default function SignUp() {
         alignItems="center"
         rowSpacing={2}
       >
-        <Grid item xs={6}>
-          <img width ={500} height={500} src={require('./nd.png')}/>
-        </Grid>
+      <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
+
+      </Grid>
+      <img src={require('./login_image.PNG')} alt="signup-pic" width="100%"/>
+      <h1>Sign up below:</h1>
+        
         <Grid item xs={4}>
           <TextField
             required
@@ -57,8 +64,8 @@ export default function SignUp() {
         <Grid item xs={4}>
           <Button variant="contained">Sign Up</Button>         
         </Grid>
-        
-      </Grid>
+        </Grid>
+      
         
     </div>
         
