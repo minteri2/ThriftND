@@ -5,29 +5,12 @@ import Components from './components/Components';
 function App() {
 
 
-  const [data, setData] = useState([{}])
-
-  useEffect(() => {
-    fetch("/members").then(
-      res => res.json()
-    ).then(
-      data => {
-        setData(data)
-      }
-    )
-  }, [])
+  const [data, setData] = useState([{}]);
 
   return (
     <div >
       <header >
         <Components />
-        {(typeof data.members === 'undefined') ? (
-          <p>Loading...</p>
-        ): (
-          data.members.map((member,i) => (
-            <p key={i}>{member}</p>
-          ))
-        )}
       </header>
     </div>
   );
