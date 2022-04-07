@@ -10,6 +10,7 @@ import Login from "./Login/Login";
 import Homepage from "./Homepage/Homepage";
 import Cart from "./Cart/Cart";
 import ProfilePage from "./Profile/Profile";
+import ProductPage from "./Product/Product";
 
 export default function Components() {
   return (
@@ -19,7 +20,8 @@ export default function Components() {
         <Route path="/register" component={SignUp} />
         <Route path="/home" component={Homepage} />
         <Route path="/cart" component={Cart} />
-        <Route path="/:username" component={ProfilePage} />
+        <Route path="/user/:username" component={ProfilePage} />
+        <Route path="/product/:product_id" component={ProductPage} />
         <Redirect to="/login" />
       </Switch>
     </Router>
