@@ -172,11 +172,27 @@ const ResponsiveAppBar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+            <Link to='/profile'>
+            <MenuItem key='profile-button' onClick={handleCloseUserMenu}>
+                <Typography textAlign="center" color='black'>Profile</Typography>
+            </MenuItem>
+            </Link>
+            <Link to='/cart'>
+            <MenuItem key='past-transactions' onClick={handleCloseUserMenu}>
+                <Typography textAlign="center" color='black'>Past Transactions</Typography>
+            </MenuItem>
+            </Link>
+            <Link to='/cart'>
+            <MenuItem key='past-transactions' onClick={handleCloseUserMenu}>
+                <Typography textAlign="center" color='black'>Groups</Typography>
+            </MenuItem>
+            </Link>
+            <MenuItem key='past-transactions' onClick={handleCloseUserMenu}>
+                <Typography textAlign="center" color='black'>Logout</Typography>
+            </MenuItem>
+            
+            
+            
             </Menu>
           </Box>
         </Toolbar>
