@@ -56,7 +56,7 @@ export default function ProfilePage() {
 
     <div>
       <Navbar />
-      {(typeof data.products === 'undefined') ? (
+      {(typeof data.users === 'undefined') ? (
           <p>Loading...</p>
         ): (
       <Grid
@@ -107,7 +107,7 @@ export default function ProfilePage() {
               <Rating name="half-rating-read" defaultValue={3.54} precision={0.1} readOnly size="large"/>
             </Grid>
             <Grid item xs={10}>
-              <ProductList products={sold}/>
+              <ProductList products={sold} type="sold"/>
             </Grid>
           </Grid>  
         

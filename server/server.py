@@ -45,7 +45,7 @@ def products():
       "prod_name": 'Coffee',
       "prod_desc": 'Clarks Golden Suede Wooden Heeled Loafers. A fun shade of a golden mustard yellow suede with a nice thick wooden sole, tan laces, and a great rubberized sole. In great condition with some signs of wear. These are from 2016. The heel measures 2 in height. Insoles measure 9.5. Tagged a US Womens size 8.5.',
       "prod_category": "Food",
-      "prod_status": 0,
+      "prod_status": 1,
       "prod_price": 5.50,
       "img": 'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c'
     },
@@ -85,6 +85,32 @@ def products():
       "user_pass": "password",
       "user_timestamp": 0,
       "img": 'https://images.unsplash.com/photo-1533827432537-70133748f5c8'
+    }
+  ],
+  "cart_items": [
+    {
+      "user_id": 0,
+      "prod_id": 5
+    },
+    {
+      "user_id": 0,
+      "prod_id": 3
+    },
+    {
+      "user_id": 1,
+      "prod_id": 1
+    }
+  ],
+  "reviews": [
+    {
+      "prod_id": 2,
+      "rating": 4.5,
+      "review_desc": "Great glasses, I'm sure, but I returned them because they claimed these are polarized. The ones I received were definitely not polarized. If they are truly Ray Bans and Polarized, it will say Ray Ban P in the corner of the lens instead of just Ray Ban."
+    },
+    {
+      "prod_id": 4,
+      "rating": 2,
+      "review_desc": "Great glasses, I'm sure, but I returned them because they claimed these are polarized. The ones I received were definitely not polarized. If they are truly Ray Bans and Polarized, it will say Ray Ban P in the corner of the lens instead of just Ray Ban."
     }
   ]}
 
