@@ -2,7 +2,7 @@ import React from "react";
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
-import Navbar2 from './Navbar2';
+import Navbar2 from '../Navbar/Navbar2';
 
 export default function SignUp() {
   return (

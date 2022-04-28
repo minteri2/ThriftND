@@ -11,6 +11,7 @@ import Homepage from "./Homepage/Homepage";
 import Cart from "./Cart/Cart";
 import ProfilePage from "./Profile/Profile";
 import ProductPage from "./Product/Product";
+import SearchResults from "./Search/SearchResults";
 
 export default function Components() {
   return (
@@ -22,6 +23,7 @@ export default function Components() {
         <Route path="/cart" component={Cart} />
         <Route path="/user/:username" component={ProfilePage} />
         <Route path="/product/:product_id" component={ProductPage} />
+        <Route path="/results/:query" component={SearchResults} />
         <Redirect to="/login" />
       </Switch>
     </Router>
