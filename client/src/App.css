@@ -45,3 +45,7 @@
 .bgpurple:hover {
   background-color: #7371ab
 }
+
+.links {
+  text-decoration: none;
+}

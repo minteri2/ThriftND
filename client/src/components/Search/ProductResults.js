@@ -8,7 +8,7 @@ import {
 import { Link } from 'react-router-dom';
 
 
-export default function ProductResults({ products }) {
+export default function ProductResults({ cartItems, user, products }) {
 
   return (
     <ImageList 
@@ -16,7 +16,13 @@ export default function ProductResults({ products }) {
       gap={20}
     >
       {products.map((prod, i) => (
-        <Link to={`/product/${prod.prod_id}`}>
+        <Link to={{
+          pathname: `/product/${prod.prod_id}`,
+          state: {
+            user: user,
+            cartItems: cartItems
+            
+          }}}>
           <ImageListItem key={i}>
             <img
               src={`${prod.png_file}`}

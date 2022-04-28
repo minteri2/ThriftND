@@ -4,13 +4,22 @@ import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar';
+import { useLocation, useHistory } from 'react-router-dom';
 
 
 
 export default function Homepage() {
+  const location = useLocation();
+  const history = useHistory();
+
+  if (typeof location.state === 'undefined') {
+    alert('You are not logged in');
+    history.push('/login');
+  }
+  
   return (
     <div>
-      <Navbar/>
+      <Navbar user={location.state.user} cartItems={location.state.cartItems}/>
       <Grid
         container
         direction="row"

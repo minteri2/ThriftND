@@ -28,31 +28,11 @@ import { useHistory } from "react-router-dom";
 
 
 const login = 'Log Out';
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
-const menuId = 'primary-search-account-menu';
 const total_cart_items = 4;
 
-const ResponsiveAppBar = () => {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+const ResponsiveAppBar = ( { user, cartItems } ) => {
 
   const history = useHistory();
-
-
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
 
   const [query, setQuery] = useState();
   const [search, setSearch] = useState();
@@ -61,7 +41,12 @@ const ResponsiveAppBar = () => {
     // Check for add flag and make sure name state variable is defined
     if (search && query) {
       const q = query.replaceAll(' ', '_');
-      history.push(`/results/${q}`);
+      history.push({
+        pathname: `/results/${q}`,
+        state: {
+          user: user,
+          cartItems: cartItems
+        }});
       setSearch(false);
     }
   
@@ -92,7 +77,6 @@ const ResponsiveAppBar = () => {
             <Link to="/login">
             <Button
                 key={login}
-                onClick={handleCloseNavMenu}
 
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
@@ -101,16 +85,21 @@ const ResponsiveAppBar = () => {
             </Link>
             
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-              <Link to="/cart">
+              <Link to={{
+                pathname: `/cart/${user}`,
+                state: {
+                  user: user,
+                  cartItems: cartItems
+                }}}>
                 <IconButton size="large" 
                 aria-label="shopping-cart"
                 color="inherit" >
-                  <Badge badgeContent={total_cart_items} color="error">
+                  <Badge badgeContent={cartItems} color="error">
                     <ShoppingCartIcon />
                   </Badge>
                   </IconButton>
               </Link>
-              <Link to="/cart">
+              <Link to="/home">
                 <IconButton
                   size="large"
                   aria-label="chat-notifications"
@@ -128,32 +117,18 @@ const ResponsiveAppBar = () => {
           
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp"/>
-              </IconButton>
+              <Link to={{
+                  pathname: `/user/${user}`,
+                  state: {
+                    user: user,
+                    cartItems: cartItems
+                  }}}> 
+                <IconButton sx={{ p: 0 }}>
+                  <Avatar alt={`${user}`}/>
+                </IconButton>
+              </Link>
             </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
+            
           </Box>
         </Toolbar>
       </Container>
