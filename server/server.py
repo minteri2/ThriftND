@@ -2,8 +2,8 @@ from flask import Flask
 from flask import request
 import cx_Oracle
 
-#cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\maint\Documents\AdvDb\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
-cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\erome\Downloads\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
+cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\maint\Documents\AdvDb\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
+# cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\erome\Downloads\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
 
 conn = cx_Oracle.connect('minteri2/minteri2@18.205.219.249/xe') # if needed, place an 'r' before any parameter in order to address special characters such as '\'. For example, if your user name contains '\', you'll need to place 'r' before the user name: user=r'User Name'
 
@@ -125,15 +125,59 @@ def product():
         FROM review
         WHERE prod_id=""" + str(prod_id)
   c.execute(query)
+  review = {}
   for f in c:
-    review = {}
     review["reviewer_username"] = f[0]
     review["rating"] = f[1]
     review["review_desc"] = f[2]
   data = {}
   data["product"] = product
   data["seller"] = seller
-  data["review"] = review
+  if review:
+    data["review"] = review
+  return data
+
+
+@app.route("/search")
+def search():
+  data = {}
+  q = str(request.args.get('q'))
+  q = q.replace("_", " ")
+  query = """
+        SELECT prod_id, prod_name, price, png_file, status
+        FROM product
+        WHERE lower(prod_name) like '%""" + q + """%' 
+        OR lower(prod_desc) like '%""" + q + """%'
+        AND status < 2"""
+  c.execute(query)
+  products = []
+  for y in c:
+    product = {}
+    product["prod_id"] = y[0]
+    product["prod_name"] = y[1]
+    product["price"] = y[2]
+    product["png_file"] = y[3]
+    product["status"] = y[4]
+    products.append(product)
+  data['products'] = products
+
+
+  query = """
+        SELECT username, first_name, last_name
+        FROM user_table
+        WHERE lower(username) like '%""" + q + """%' 
+        OR lower(concat(first_name, concat(' ', last_name))) like '%""" + q + """%'"""
+  c.execute(query)
+
+  users = []
+  for y in c:
+    user = {}
+    user["username"] = y[0]
+    user["first_name"] = y[1]
+    user["last_name"] = y[2]
+    users.append(user)
+  data['users'] = users
+  
   return data
 
 if __name__ == "__main__":

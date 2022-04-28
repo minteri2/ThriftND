@@ -3,7 +3,7 @@ import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
-import Navbar2 from './Navbar2';
+import Navbar2 from '../Navbar/Navbar2';
 
 
 

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useEffect, useState} from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -21,6 +21,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Badge from '@mui/material/Badge';
 import ChatIcon from '@mui/icons-material/Chat';
+import SearchBar from '../Search/SearchBar';
 
 
 
@@ -47,49 +48,28 @@ const ResponsiveAppBar = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-  const Search = styled('div')(({ theme }) => ({
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-    '&:hover': {
-      backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    padding: 2,
-    width: '100%',
-    height: '80%',
-    position: 'relative', top: '10%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(3),
-      width: 'auto',
-    },
-  }));
-  
-  const SearchIconWrapper = styled('div')(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }));
-  
-  const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: 'inherit',
-    '& .MuiInputBase-input': {
-      padding: theme.spacing(1, 1, 1, 0),
-      // vertical padding + font size from searchIcon
-      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-      transition: theme.transitions.create('width'),
-      width: '100%',
-      [theme.breakpoints.up('md')]: {
-        width: '40ch',
-      },
-    },
-  }));
 
+  const [query, setQuery] = useState();
+  const [search, setSearch] = useState();
+
+  useEffect(() => {
+    // Check for add flag and make sure name state variable is defined
+    if (search && query) {
+      const q = query.replaceAll(' ', '_');
+      return <Link to={`/results/${q}`}></Link>
+    }
   
+  }, [query, search]);
+
+  const onSubmitHandler = (e) => {
+    e.preventDefault();
+    setSearch(true);
+  }
+
+  const onChangeHandler = (e) => {
+    e.preventDefault();
+    setQuery(e.target.value);
+  }  
 
 
   return (
@@ -100,18 +80,8 @@ const ResponsiveAppBar = () => {
           <img src={require('./logo.PNG')} alt="Logo-pic" width="100"/>
 
          
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-    
-          
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Search…"
-                inputProps={{ 'aria-label': 'search' }}
-              />
-            </Search>
+          <Box sx={{ marginLeft: '20px', flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            <SearchBar onSubmit={onSubmitHandler} onChange={onChangeHandler}/>
           </Box>
             <Link to="/login">
             <Button

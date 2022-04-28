@@ -5,7 +5,7 @@ import {
   Grid,
   Typography 
 } from '@mui/material';
-import Navbar from '../Login/Navbar';
+import Navbar from '../Navbar/Navbar';
 import ProductList from '../Product/ProductList';
 import logo from '../Login/nd.png';
 import { Identity } from "@mui/base";

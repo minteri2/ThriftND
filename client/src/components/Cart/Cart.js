@@ -1,12 +1,10 @@
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
-//     sx={{ width: 500, height: 450 }}>
-import Navbar from '../Login/Navbar';
 import { Link, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-
-
+import TextField from '@mui/material/TextField';
+import Navbar from '../Navbar/Navbar';
 import { 
   Grid,
   Divider,
