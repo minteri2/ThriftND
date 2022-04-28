@@ -13,34 +13,39 @@ export default function Homepage() {
       <Navbar/>
       <Grid
         container
-        direction="column"
+        direction="row"
         justifyContent="space-around"
         alignItems="center"
         rowSpacing={2}
       >
-      <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
-
-      </Grid>
+      
+      
       <img src={require('./homepagepic.PNG')} alt="home-pic" width="100%"/>    
-        
-        
       </Grid>
-
-      <Grid container direction={"row"}>
-            <Grid item style={{width: '500px'}}>
+      <Grid container
+        direction="row"
+        justifyContent="space-around"
+        alignItems="center"
+         >
+            <Grid item style={{width: '500px', backgroundColor: 'black'}}>
             <img src={require('./ndstuff2.jpg')} alt="home-pic" width="100%"/> 
             </Grid>
-			<Grid 
-        justifyContent="space-around"
-        alignItems="center">
-          <h1>About Us</h1>
-          <p>Whether it is Notre Dame gear, textbooks, lab materials, dorm decor, appartment furniture, 
+			      <Grid container
+            style={{width: '500px', backgroundColor: '#AD89A3'}}
+
+             justifyContent="space-around"
+             alignItems="center"
+            >
+
+           <h1>About Us</h1>
+            <p>Whether it is Notre Dame gear, textbooks, lab materials, dorm decor, appartment furniture, 
             football tickets, or anything else you might need for school, we've got you. 
-            Our platform allows ND students and staff to sell or buy secondhand items that
-          </p>
+            Our platform allows ND students and staff to sell or buy secondhand items, chat, and 
+            make groups to discuss different matters!
+            </p>
+          </Grid> 
       </Grid> 
 			
-      </Grid>
       
         
     </div>
