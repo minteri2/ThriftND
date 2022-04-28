@@ -1,4 +1,11 @@
 from flask import Flask
+from flask import request
+import cx_Oracle
+
+cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\maint\Documents\AdvDb\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
+conn = cx_Oracle.connect('minteri2/minteri2@18.205.219.249/xe') # if needed, place an 'r' before any parameter in order to address special characters such as '\'. For example, if your user name contains '\', you'll need to place 'r' before the user name: user=r'User Name'
+
+c = conn.cursor()
 
 app = Flask(__name__)
 
@@ -113,6 +120,25 @@ def products():
       "review_desc": "Great glasses, I'm sure, but I returned them because they claimed these are polarized. The ones I received were definitely not polarized. If they are truly Ray Bans and Polarized, it will say Ray Ban P in the corner of the lens instead of just Ray Ban."
     }
   ]}
+
+@app.route("/test")
+def test():
+  user = request.args.get('user')
+  query = """
+        SELECT *
+        FROM user_table
+        WHERE username='""" + str(user) + "'"
+  c.execute(query)
+  for y in c:
+    user1 = {}
+    user1["username"] = y[0]
+    user1["first_name"] = y[1]
+    user1["last_name"] = y[2]
+    user1["email"] = y[3]
+    user1["phone"] = y[4]
+    user1["balance"] = y[6]
+  return user1
+
 
 if __name__ == "__main__":
   app.run()
