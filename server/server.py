@@ -10,6 +10,40 @@ conn = cx_Oracle.connect('minteri2/minteri2@18.205.219.249/xe') # if needed, pla
 c = conn.cursor()
 
 app = Flask(__name__)
+# class DataStore():
+#     user = None
+
+# data = DataStore()
+
+
+@app.route("/login")
+def login():
+  username = request.args.get('username')
+  password = request.args.get('password')
+  query =  """
+        SELECT username, user_pass
+        FROM user_table
+        WHERE username='""" + str(username) + "'"
+  c.execute(query)
+  user = {}
+  user['isAuthenticated'] = False
+  
+  for u in c:
+    if password == u[1]:
+      user['username'] = u[0]
+      user['isAuthenticated'] = True
+      query =  """
+          SELECT *
+          FROM cart_item
+          WHERE username='""" + str(username) + "'"
+      c.execute(query)
+      c.fetchall()
+      user['cartItems'] = c.rowcount
+
+  if c.rowcount == 0:
+    user['notFound'] = True
+
+  return user
 
 @app.route("/cart")
 def products():
@@ -39,8 +73,6 @@ def products():
       curr_prod['png_file'] = j[2]
       products.append(curr_prod)
       data['products'] = products
-  print(data)
-  print("lala")
   return data
 
 @app.route("/user")

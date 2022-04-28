@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation, useHistory } from "react-router-dom";
 import { 
   Rating,
   Grid,
@@ -7,12 +7,20 @@ import {
 } from '@mui/material';
 import Navbar from '../Navbar/Navbar';
 import ProductList from '../Product/ProductList';
-import logo from '../Login/nd.png';
 import { Identity } from "@mui/base";
 import UserResults from "./UserResults";
 import ProductResults from "./ProductResults";
 
 export default function SearchResults() {
+  const location = useLocation();
+  const history = useHistory();
+
+  if (typeof location.state === 'undefined') {
+    alert('You are not logged in');
+    history.push('/login');
+  }
+
+  
   const {query} = useParams();
 
   const [data, setData] = useState([{}]);
@@ -27,14 +35,13 @@ export default function SearchResults() {
     )
   }, [query])
 
-  console.log(data);
 
   
   return (
 
 
     <div>
-      <Navbar />
+      <Navbar user={location.state.user} cartItems={location.state.cartItems}/>
       {(typeof data.products === 'undefined') ? (
           <p>Loading...</p>
         ): (
@@ -61,7 +68,7 @@ export default function SearchResults() {
               <Typography variant="h4">Products:</Typography>
             </Grid>
             <Grid item xs={10}>
-              <ProductResults products={data.products}/> 
+              <ProductResults cartItems={location.state.cartItems} user={location.state.user} products={data.products}/> 
             </Grid>
           </Grid> 
           ) : (
@@ -78,7 +85,7 @@ export default function SearchResults() {
               <Typography variant="h4" align="left">Users:</Typography>
             </Grid>
             <Grid container >
-              <UserResults users={data.users}/>
+              <UserResults cartItems={location.state.cartItems} authUser={location.state.user} users={data.users}/>
             </Grid>
           </Grid>           
           ) : (

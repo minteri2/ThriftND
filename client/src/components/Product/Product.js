@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation, useHistory } from "react-router-dom";
 import { 
   Grid,
   Typography ,
@@ -8,10 +8,17 @@ import {
   Rating
 } from '@mui/material';
 import Navbar from '../Navbar/Navbar';
-import ProductList from '../Product/ProductList';
-import logo from '../Login/nd.png';
 
-export default function ProfilePage() {
+export default function ProductPage() {
+  const location = useLocation();
+  const history = useHistory();
+
+  if (typeof location.state === 'undefined') {
+    alert('You are not logged in');
+    history.push('/login');
+  }
+
+
   const {product_id} = useParams();
 
   const [data, setData] = useState([{}]);
@@ -28,7 +35,7 @@ export default function ProfilePage() {
   
   return (
     <div>
-      <Navbar/>
+      <Navbar user={location.state.user} cartItems={location.state.cartItems}/>
       {(typeof data.product === 'undefined') ? (
           <p>Loading...</p>
         ): (
