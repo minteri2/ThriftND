@@ -36,3 +36,12 @@
     transform: rotate(360deg);
   }
 }
+
+.bgpurple {
+  background-color: #2a2772;
+  border-radius: 10px;
+}
+
+.bgpurple:hover {
+  background-color: #7371ab
+}

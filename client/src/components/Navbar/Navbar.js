@@ -22,6 +22,8 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import Badge from '@mui/material/Badge';
 import ChatIcon from '@mui/icons-material/Chat';
 import SearchBar from '../Search/SearchBar';
+import { useHistory } from "react-router-dom";
+
 
 
 
@@ -33,6 +35,9 @@ const total_cart_items = 4;
 const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const history = useHistory();
+
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -56,7 +61,8 @@ const ResponsiveAppBar = () => {
     // Check for add flag and make sure name state variable is defined
     if (search && query) {
       const q = query.replaceAll(' ', '_');
-      return <Link to={`/results/${q}`}></Link>
+      history.push(`/results/${q}`);
+      setSearch(false);
     }
   
   }, [query, search]);
