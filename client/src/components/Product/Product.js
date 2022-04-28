@@ -13,15 +13,16 @@ import logo from '../Login/nd.png';
 
 export default function ProfilePage() {
   const {product_id} = useParams();
+  console.log(product_id)
 
+  const [product, setProduct] = useState([{}]);
   const [data, setData] = useState([{}]);
-
-  let main_product; 
+  console.log(data)
   let seller;
   let prod_review;
 
   useEffect(() => {
-    fetch("/products").then(
+    fetch(`/product?prod_id=${product_id}`).then(
       res => res.json()
     ).then(
       data => {
@@ -29,33 +30,33 @@ export default function ProfilePage() {
       }
     )
   }, [])
-  if (typeof data.products !== 'undefined') {
-    console.log(data.reviews);
+  if (typeof data.product !== 'undefined') {
+    console.log(data.product);
   }
   
 
-  if (typeof data.products !== 'undefined') {
-    data.products.map((product,i) => {
-      if (product_id == product.prod_id){
-        main_product = product;
-        data.users.map((user) => {
-          if (user.user_id == product.seller_id){
-            seller = user;
-          }
-        })
-        data.reviews.map((review) => {
-          if (review.prod_id == product.prod_id){
-            prod_review = review;
-          }
-        })
-      }
-    })
-  }
+  // if (typeof data.products !== 'undefined') {
+  //   data.products.map((product,i) => {
+  //     if (product_id == product.prod_id){
+  //       main_product = product;
+  //       data.users.map((user) => {
+  //         if (user.user_id == product.seller_id){
+  //           seller = user;
+  //         }
+  //       })
+  //       data.reviews.map((review) => {
+  //         if (review.prod_id == product.prod_id){
+  //           prod_review = review;
+  //         }
+  //       })
+  //     }
+  //   })
+  // }
   
   return (
     <div>
       <Navbar/>
-      {(typeof data.products === 'undefined') ? (
+      {(typeof data.product === 'undefined') ? (
           <p>Loading...</p>
         ): (
         <Grid
@@ -78,7 +79,7 @@ export default function ProfilePage() {
                   // maxWidth: { xs: 350, md: 250 },
                 }}
                 alt="The house from the offer."
-                src={main_product.img}
+                src={data.product.png_file}
               />
             </Grid>
             <Grid container 
@@ -97,7 +98,7 @@ export default function ProfilePage() {
                   fontWeight: 'bold',
                   width:'100%',
                 }}>
-                {main_product.prod_name}
+                {data.product.prod_name}
               </Typography>
               <Typography 
                 align="center"
@@ -105,7 +106,7 @@ export default function ProfilePage() {
                 sx={{ 
                   width:'100%',
                 }}>
-                Sold By: {seller.first_name} {seller.last_name}
+                Sold By: {data.seller.first_name} {data.seller.last_name}
               </Typography>
               <Typography 
                 align="center"
@@ -113,7 +114,7 @@ export default function ProfilePage() {
                 sx={{ 
                   width:'100%',
                 }}>
-                @{seller.username}
+                @{data.seller.username}
               </Typography>
               <Typography 
                 variant="h5" 
@@ -121,20 +122,14 @@ export default function ProfilePage() {
                 sx={{ 
                   fontWeight: 'bold',
                   width:'100%',
-                }}>
-                ${main_product.prod_price.toFixed(2)}
+                }}> 
+                ${data.product.price.toFixed(2)}
               </Typography>
-              {/* <Grid item>
-                    <Button variant="outlined">Reserve (24hr)</Button>        
-                  </Grid>
-                  <Grid item>
-                    <Button variant="contained">Add to Cart</Button> 
-              </Grid> */}
               <Grid item>
-                <Typography> {main_product.prod_desc}
+                <Typography> {data.product.prod_desc}
                 </Typography>
               </Grid>
-              {main_product.prod_status === 0 ? (
+              {data.product.status === 0 ? (
                 <Grid container
                 justifyContent="flex-start"
                 direction="column"
@@ -165,12 +160,15 @@ export default function ProfilePage() {
                       fontWeight: 'bold',
                     }}>Review</Typography>
                   </Grid>
-                  <Grid item>
-                    <Rating name="half-rating-read" defaultValue={prod_review.rating} precision={0.1} readOnly size="large"/>
+                   <Grid item>
+                    <Rating name="half-rating-read" defaultValue={data.review.rating} precision={0.1} readOnly size="large"/>
                   </Grid>
                   <Grid>
-                    <Typography>{prod_review.review_desc}</Typography>
-                  </Grid>
+                    <Typography>{data.review.review_desc}</Typography>
+                  </Grid> 
+                  <Grid>
+                    <Typography>Reviewed by: {data.review.reviewer_username}</Typography>
+                  </Grid> 
                 </Grid>
               )}
             </Grid>
