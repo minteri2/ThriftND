@@ -124,6 +124,54 @@ def products():
   ]}
 
 
+@app.route("/user")
+def user():
+  data = {}
+  username = request.args.get('user')
+  query = """
+        SELECT *
+        FROM user_table
+        WHERE username='""" + str(username) + "'"
+  c.execute(query)
+  for y in c:
+    user = {}
+    user["username"] = y[0]
+    user["first_name"] = y[1]
+    user["last_name"] = y[2]
+    user["email"] = y[3]
+    user["phone"] = y[4]
+    user["balance"] = y[6]
+  data['user'] = user
+
+
+  query = """
+        SELECT prod_id, prod_name, price, png_file, status
+        FROM product
+        WHERE username='""" + str(username) + "'"
+  c.execute(query)
+  products = []
+  for y in c:
+    product = {}
+    product["prod_id"] = y[0]
+    product["prod_name"] = y[1]
+    product["price"] = y[2]
+    product["png_file"] = y[3]
+    product["status"] = y[4]
+    products.append(product)
+
+
+  for p in products:
+    query = """
+        SELECT rating
+        FROM review
+        WHERE prod_id=""" + str(p['prod_id'])
+    c.execute(query)
+    for y in c:
+      p['rating'] = y[0]
+  data['products'] = products
+  
+  return data
+
 
 @app.route("/product")
 def product():
@@ -133,7 +181,6 @@ def product():
         FROM product
         WHERE prod_id=""" + str(prod_id)
   c.execute(query)
-
   for y in c:
     product = {}
     product["prod_id"] = y[0]
