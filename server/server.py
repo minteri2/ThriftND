@@ -121,23 +121,53 @@ def products():
     }
   ]}
 
-@app.route("/test")
-def test():
-  user = request.args.get('user')
+@app.route("/user")
+def user():
+  data = {}
+  username = request.args.get('user')
   query = """
         SELECT *
         FROM user_table
-        WHERE username='""" + str(user) + "'"
+        WHERE username='""" + str(username) + "'"
   c.execute(query)
   for y in c:
-    user1 = {}
-    user1["username"] = y[0]
-    user1["first_name"] = y[1]
-    user1["last_name"] = y[2]
-    user1["email"] = y[3]
-    user1["phone"] = y[4]
-    user1["balance"] = y[6]
-  return user1
+    user = {}
+    user["username"] = y[0]
+    user["first_name"] = y[1]
+    user["last_name"] = y[2]
+    user["email"] = y[3]
+    user["phone"] = y[4]
+    user["balance"] = y[6]
+  data['user'] = user
+
+
+  query = """
+        SELECT prod_id, prod_name, price, png_file, status
+        FROM product
+        WHERE username='""" + str(username) + "'"
+  c.execute(query)
+  products = []
+  for y in c:
+    product = {}
+    product["prod_id"] = y[0]
+    product["prod_name"] = y[1]
+    product["price"] = y[2]
+    product["png_file"] = y[3]
+    product["status"] = y[4]
+    products.append(product)
+
+
+  for p in products:
+    query = """
+        SELECT rating
+        FROM review
+        WHERE prod_id=""" + str(p['prod_id'])
+    c.execute(query)
+    for y in c:
+      p['rating'] = y[0]
+  data['products'] = products
+  
+  return data
 
 
 if __name__ == "__main__":
