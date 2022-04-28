@@ -4,7 +4,8 @@ import {
   Grid,
   Typography ,
   Box,
-  Button
+  Button,
+  Rating
 } from '@mui/material';
 import Navbar from '../Login/Navbar';
 import ProductList from '../Product/ProductList';
@@ -17,6 +18,7 @@ export default function ProfilePage() {
 
   let main_product; 
   let seller;
+  let prod_review;
 
   useEffect(() => {
     fetch("/products").then(
@@ -27,7 +29,9 @@ export default function ProfilePage() {
       }
     )
   }, [])
-
+  if (typeof data.products !== 'undefined') {
+    console.log(data.reviews);
+  }
   
 
   if (typeof data.products !== 'undefined') {
@@ -39,9 +43,13 @@ export default function ProfilePage() {
             seller = user;
           }
         })
+        data.reviews.map((review) => {
+          if (review.prod_id == product.prod_id){
+            prod_review = review;
+          }
+        })
       }
     })
-    console.log(main_product);
   }
   
   return (
@@ -114,18 +122,57 @@ export default function ProfilePage() {
                   fontWeight: 'bold',
                   width:'100%',
                 }}>
-                $ {main_product.prod_price}
+                ${main_product.prod_price.toFixed(2)}
               </Typography>
-              <Grid item>
-                <Button variant="outlined">Reserve (24hr)</Button>        
-              </Grid>
-              <Grid item>
-                <Button variant="contained">Add to Cart</Button> 
-              </Grid>
+              {/* <Grid item>
+                    <Button variant="outlined">Reserve (24hr)</Button>        
+                  </Grid>
+                  <Grid item>
+                    <Button variant="contained">Add to Cart</Button> 
+              </Grid> */}
               <Grid item>
                 <Typography> {main_product.prod_desc}
                 </Typography>
               </Grid>
+              {main_product.prod_status === 0 ? (
+                <Grid container
+                justifyContent="flex-start"
+                direction="column"
+                alignItems="center"
+                rowSpacing={2}
+                sx={{
+                  marginTop: '5px'
+                }}>
+                  <Grid item>
+                    <Button variant="outlined">Reserve (24hr)</Button>        
+                  </Grid>
+                  <Grid item>
+                    <Button variant="contained">Add to Cart</Button> 
+                  </Grid>
+                </Grid>
+              ) : (
+                <Grid container
+                justifyContent="flex-start"
+                direction="column"
+                alignItems="center"
+                rowSpacing={2}
+                sx={{
+                  marginTop: '40px'
+                }}>
+                  <Grid>
+                    <Typography variant="h5"
+                    sx={{ 
+                      fontWeight: 'bold',
+                    }}>Review</Typography>
+                  </Grid>
+                  <Grid item>
+                    <Rating name="half-rating-read" defaultValue={prod_review.rating} precision={0.1} readOnly size="large"/>
+                  </Grid>
+                  <Grid>
+                    <Typography>{prod_review.review_desc}</Typography>
+                  </Grid>
+                </Grid>
+              )}
             </Grid>
           </Grid>
         </Grid>

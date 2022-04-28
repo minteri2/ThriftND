@@ -8,35 +8,34 @@ import {
 import { Link } from 'react-router-dom';
 
 
-export default function ProductList(props) {
-  const products = props.products; 
+export default function ProductList({ products }) {
 
   return (
     <ImageList 
       cols={3}
       gap={30}
     >
-      {products.map((item) => (
-        <Link to={`/product/${item.prod_id}`}>
-          <ImageListItem key={item.img}>
+      {products.map((prod, i) => (
+        <Link to={`/product/${prod.prod_id}`}>
+          <ImageListItem key={i}>
             <img
-              src={`${item.img}`}
-              srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
-              alt={item.prod_name}
+              src={`${prod.png_file}`}
+              srcSet={`${prod.png_file}?w=248&fit=crop&auto=format&dpr=2 2x`}
+              alt={prod.prod_name}
               loading="lazy"
             />
-          {props.type === 'sold' ?
+          {prod.hasOwnProperty("rating") ?
             <ImageListItemBar
-              title={item.prod_name}
-              subtitle={item.prod_price}
+              title={prod.prod_name}
+              subtitle={`$${prod.price.toFixed(2)}`}
               actionIcon={
-                <Rating name="half-rating-read" defaultValue={3.54} precision={0.1} readOnly size="small"/>
+                <Rating name="half-rating-read" defaultValue={prod.rating} precision={0.1} readOnly size="small"/>
               }
             />
             :
             <ImageListItemBar
-              title={item.prod_name}
-              subtitle={item.prod_price}
+              title={prod.prod_name}
+              subtitle={`$${prod.price.toFixed(2)}`}
             />
           }
           </ImageListItem>

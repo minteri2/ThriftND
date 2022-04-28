@@ -14,12 +14,12 @@ export default function ProfilePage() {
   const {username} = useParams();
 
   const [data, setData] = useState([{}]);
-  let main_user;
+  let rating = 0;
   let available = [];
   let sold = [];
 
   useEffect(() => {
-    fetch("/products").then(
+    fetch(`/user?user=${username}`).then(
       res => res.json()
     ).then(
       data => {
@@ -28,26 +28,22 @@ export default function ProfilePage() {
     )
   }, [])
 
-
-  if (typeof data.users !== 'undefined') {
-    data.users.map((user,i) => {
-      if (username == user.username){
-        main_user = user;
+  if (typeof data.products !== 'undefined') {
+    let tot = 0;
+    let num = 0;
+    data.products.map((product) => {
+      if (product.status == 2){
+        sold.push(product)
+      }
+      else {
+        available.push(product)
+      }
+      if (product.hasOwnProperty("rating")) {
+        tot += product.rating;
+        num += 1;
       }
     })
-  }
-
-  if (typeof data.users !== 'undefined') {
-    data.products.map((product,i) => {
-      if (product.seller_id == main_user.user_id){
-        if (product.prod_status == 0){
-          available.push(product);
-        }
-        else {
-          sold.push(product);
-        }
-      }
-    })
+    rating = tot/num;
   }
 
   
@@ -56,7 +52,7 @@ export default function ProfilePage() {
 
     <div>
       <Navbar />
-      {(typeof data.products === 'undefined') ? (
+      {(typeof data.user === 'undefined') ? (
           <p>Loading...</p>
         ): (
       <Grid
@@ -69,13 +65,13 @@ export default function ProfilePage() {
         {//className={classes.color}
 }
         <Grid item xs={12}>
-          <Typography variant="h2" sx={{ fontWeight: 'bold' }}>{main_user.first_name} {main_user.last_name}</Typography>
+          <Typography variant="h2" sx={{ fontWeight: 'bold' }}>{data.user.first_name} {data.user.last_name}</Typography>
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="h4" sx={{ fontWeight: 'bold' }}>@{username}</Typography>
+          <Typography variant="h4" sx={{ fontWeight: 'bold' }}>@{data.user.username}</Typography>
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{main_user.email} | {main_user.phone}</Typography>
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{data.user.email} | {data.user.phone}</Typography>
         </Grid>
         {available.length > 0 && 
           (
@@ -89,7 +85,7 @@ export default function ProfilePage() {
               <Typography variant="h4">Available Products:</Typography>
             </Grid>
             <Grid item xs={10}>
-              {available && <ProductList products={available}/> }
+              <ProductList products={available}/> 
             </Grid>
           </Grid> )  
         }  
@@ -104,7 +100,7 @@ export default function ProfilePage() {
               <Typography variant="h4" align="left">Sold in the Past:</Typography>
             </Grid>
             <Grid item xs={12}>
-              <Rating name="half-rating-read" defaultValue={3.54} precision={0.1} readOnly size="large"/>
+              <Rating name="half-rating-read" defaultValue={rating} precision={0.1} readOnly size="large"/>
             </Grid>
             <Grid item xs={10}>
               <ProductList products={sold}/>
