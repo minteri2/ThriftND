@@ -11,6 +11,8 @@ import Homepage from "./Homepage/Homepage";
 import Cart from "./Cart/Cart";
 import ProfilePage from "./Profile/Profile";
 import ProductPage from "./Product/Product";
+// import Chats from "./Chat/Chats";
+
 
 export default function Components() {
   return (
@@ -19,9 +21,10 @@ export default function Components() {
         <Route path="/login" component={Login} />
         <Route path="/register" component={SignUp} />
         <Route path="/home" component={Homepage} />
-        <Route path="/cart" component={Cart} />
+        <Route path="/cart/:username" component={Cart} />
         <Route path="/user/:username" component={ProfilePage} />
         <Route path="/product/:product_id" component={ProductPage} />
+        {/* <Route path="/chats/:username" component={Chats} /> */}
         <Redirect to="/login" />
       </Switch>
     </Router>
