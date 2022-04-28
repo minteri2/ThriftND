@@ -25,7 +25,7 @@ export default function SearchResults() {
         setData(data)
       }
     )
-  }, [])
+  }, [query])
 
   console.log(data);
 
@@ -74,10 +74,10 @@ export default function SearchResults() {
           alignItems="center"
           direction="column"
           xs={10}>
-            <Grid item xs={12}>
+            <Grid item>
               <Typography variant="h4" align="left">Users:</Typography>
             </Grid>
-            <Grid item xs={10}>
+            <Grid container >
               <UserResults users={data.users}/>
             </Grid>
           </Grid>           
