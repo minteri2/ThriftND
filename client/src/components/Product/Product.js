@@ -7,19 +7,14 @@ import {
   Button,
   Rating
 } from '@mui/material';
-import Navbar from '../Login/Navbar';
+import Navbar from '../Navbar/Navbar';
 import ProductList from '../Product/ProductList';
 import logo from '../Login/nd.png';
 
 export default function ProfilePage() {
   const {product_id} = useParams();
-  console.log(product_id)
 
-  const [product, setProduct] = useState([{}]);
   const [data, setData] = useState([{}]);
-  console.log(data)
-  let seller;
-  let prod_review;
 
   useEffect(() => {
     fetch(`/product?prod_id=${product_id}`).then(
@@ -30,28 +25,6 @@ export default function ProfilePage() {
       }
     )
   }, [])
-  if (typeof data.product !== 'undefined') {
-    console.log(data.product);
-  }
-  
-
-  // if (typeof data.products !== 'undefined') {
-  //   data.products.map((product,i) => {
-  //     if (product_id == product.prod_id){
-  //       main_product = product;
-  //       data.users.map((user) => {
-  //         if (user.user_id == product.seller_id){
-  //           seller = user;
-  //         }
-  //       })
-  //       data.reviews.map((review) => {
-  //         if (review.prod_id == product.prod_id){
-  //           prod_review = review;
-  //         }
-  //       })
-  //     }
-  //   })
-  // }
   
   return (
     <div>
@@ -64,10 +37,7 @@ export default function ProfilePage() {
           justifyContent="space-around"
           alignItems="center"
           direction="column"
-          //sx={{ bgcolor: 'primary.main' }}
         >
-          {//className={classes.color}
-  }
           <Grid container xs={10} justifyContent="space-evenly">
             <Grid item xs={5} >
               <Box
@@ -75,8 +45,6 @@ export default function ProfilePage() {
                 sx={{
                   height: '100%',
                   width: '100%',
-                  // maxHeight: { xs: 233, md: 167 },
-                  // maxWidth: { xs: 350, md: 250 },
                 }}
                 alt="The house from the offer."
                 src={data.product.png_file}
@@ -145,6 +113,51 @@ export default function ProfilePage() {
                     <Button variant="contained">Add to Cart</Button> 
                   </Grid>
                 </Grid>
+              ) : (data.product.status === 2 ? (
+                <Grid container>
+                  { data.hasOwnProperty("review") ? (
+                    <Grid container
+                    justifyContent="flex-start"
+                    direction="column"
+                    alignItems="center"
+                    rowSpacing={2}
+                    sx={{
+                      marginTop: '40px'
+                    }}>
+                      <Grid>
+                        <Typography variant="h5"
+                        sx={{ 
+                          fontWeight: 'bold',
+                        }}>Review</Typography>
+                      </Grid>
+                      <Grid item>
+                        <Rating name="half-rating-read" defaultValue={data.review.rating} precision={0.1} readOnly size="large"/>
+                      </Grid>
+                      <Grid>
+                        <Typography>{data.review.review_desc}</Typography>
+                      </Grid> 
+                      <Grid>
+                        <Typography>Reviewed by: {data.review.reviewer_username}</Typography>
+                      </Grid> 
+                    </Grid>
+                    ) : (
+                      <Grid container
+                      justifyContent="flex-start"
+                      direction="column"
+                      alignItems="center"
+                      rowSpacing={2}
+                      sx={{
+                        marginTop: '40px'
+                      }}>
+                        <Grid>
+                          <Typography variant="h5"
+                          sx={{ 
+                            fontWeight: 'bold',
+                          }}>This Product has Already Been Sold</Typography>
+                        </Grid>
+                      </Grid>
+                    )}  
+                  </Grid>
               ) : (
                 <Grid container
                 justifyContent="flex-start"
@@ -158,19 +171,10 @@ export default function ProfilePage() {
                     <Typography variant="h5"
                     sx={{ 
                       fontWeight: 'bold',
-                    }}>Review</Typography>
+                    }}>This Product is Currently Reserved</Typography>
                   </Grid>
-                   <Grid item>
-                    <Rating name="half-rating-read" defaultValue={data.review.rating} precision={0.1} readOnly size="large"/>
-                  </Grid>
-                  <Grid>
-                    <Typography>{data.review.review_desc}</Typography>
-                  </Grid> 
-                  <Grid>
-                    <Typography>Reviewed by: {data.review.reviewer_username}</Typography>
-                  </Grid> 
                 </Grid>
-              )}
+              ))}
             </Grid>
           </Grid>
         </Grid>
