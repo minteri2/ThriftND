@@ -13,7 +13,7 @@ export default function Homepage() {
 
   if (typeof location.state === 'undefined') {
     alert('You are not logged in');
-    return <Redirect to='./login'/>
+    return <Redirect to='/login'/>
   }
   
   return (

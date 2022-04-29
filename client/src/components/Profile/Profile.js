@@ -24,7 +24,7 @@ export default function ProfilePage() {
 
   if (typeof location.state === 'undefined') {
     alert('You are not logged in');
-    return <Redirect to='./login'/>
+    return <Redirect to='/login'/>
   }
 
   let rating = 0;
