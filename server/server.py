@@ -6,7 +6,6 @@ cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\maint\Documents\AdvDb\instantcli
 # cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\erome\Downloads\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
 
 conn = cx_Oracle.connect('minteri2/minteri2@18.205.219.249/xe') # if needed, place an 'r' before any parameter in order to address special characters such as '\'. For example, if your user name contains '\', you'll need to place 'r' before the user name: user=r'User Name'
-
 c = conn.cursor()
 
 app = Flask(__name__)
@@ -44,6 +43,61 @@ def login():
     user['notFound'] = True
 
   return user
+
+@app.route("/register")
+def register():
+  username = request.args.get('username')
+  fname = request.args.get('fname')
+  lname = request.args.get('lname')
+  email = request.args.get('email')
+  phone = ''
+  password = request.args.get('password')
+  if request.args.get('phone'):
+    phone = str(request.args.get('phone'))
+    numeric_filter = filter(str.isdigit, phone)
+    phone = "".join(numeric_filter)
+
+  query =  """
+        INSERT INTO user_table
+        VALUES('""" + str(username) + "','" + str(fname) + "','" + str(lname) + "','" + str(email) + "','" + phone + "','" + str(password) + "',0)"
+  print('que pedo')
+  try:
+    c.execute(query)
+    conn.commit()
+    return {'success': 'success'}
+  except cx_Oracle.IntegrityError as e:
+    err, = e.args
+    if err.code == 1:
+      if 'SYS_C0013353' in err.message:
+        return {'error': 'Username already exists.'}
+      elif 'EMAIL' in err.message:
+        return {'error': 'Email has already been used.'}
+    elif err.code == 2290:
+      if 'EMAIL_ND' in err.message:
+        return {'error': 'Email has to be an nd email (i.e. ramzi@nd.edu).'}
+      elif 'PASSWORD_LEN' in err.message:
+        return {'error': 'Password has to be at least 8 characters.'}
+      elif 'USERNAME_LEN' in err.message:
+        return {'error': 'Username has to be at least 3 characters.'}
+      elif 'PHONE_US' in err.message:
+        return {'error': 'Phone has to be a valid US phone (10 digits)'}
+    elif err.code == 1400:
+      if 'USERNAME' in err.message:
+        return {'error': 'Username is required.'}
+      elif 'FIRST_NAME' in err.message:
+        return {'error': 'First name is required.'}
+      elif 'LAST_NAME' in err.message:
+        return {'error': 'Last name is required.'}
+      elif 'EMAIL' in err.message:
+        return {'error': 'Email is required.'}
+      elif 'USER_PASS' in err.message:
+        return {'error': 'Password is required.'}
+      
+    return {'error': err.message}
+
+  # for p in c:
+  #   print(p)
+  
 
 @app.route("/cart")
 def products():
@@ -178,8 +232,8 @@ def search():
   query = """
         SELECT prod_id, prod_name, price, png_file, status
         FROM product
-        WHERE lower(prod_name) like '%""" + q + """%' 
-        OR lower(prod_desc) like '%""" + q + """%'
+        WHERE (lower(prod_name) like '%""" + q + """%' 
+        OR lower(prod_desc) like '%""" + q + """%')
         AND status < 2"""
   c.execute(query)
   products = []

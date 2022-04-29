@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams, useLocation, useHistory } from "react-router-dom";
+import { useParams, useLocation, Redirect } from "react-router-dom";
 import { 
   Rating,
   Grid,
@@ -13,14 +13,7 @@ import ProductResults from "./ProductResults";
 
 export default function SearchResults() {
   const location = useLocation();
-  const history = useHistory();
 
-  if (typeof location.state === 'undefined') {
-    alert('You are not logged in');
-    history.push('/login');
-  }
-
-  
   const {query} = useParams();
 
   const [data, setData] = useState([{}]);
@@ -34,6 +27,11 @@ export default function SearchResults() {
       }
     )
   }, [query])
+
+  if (typeof location.state === 'undefined') {
+    alert('You are not logged in');
+    return <Redirect to='./login'/>
+  }
 
 
   

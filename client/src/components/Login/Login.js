@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import Navbar2 from '../Navbar/Navbar2';
 import LoginForm from "./LoginForm";
 import { useHistory } from "react-router-dom";
+import { logIn } from "./AuthService";
 
 
 
@@ -23,9 +24,7 @@ export default function Login() {
     // Check for add flag and make sure name state variable is defined
     if (login && username && password) {
 
-      fetch(`/login?username=${username}&password=${password}`).then(
-        res => res.json()
-      ).then(
+      logIn(username, password).then(
         data => {
           setData(data)
         }

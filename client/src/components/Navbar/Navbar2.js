@@ -24,7 +24,7 @@ import ChatIcon from '@mui/icons-material/Chat';
 
 
 
-const login = 'Sign Up';
+
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 const menuId = 'primary-search-account-menu';
 const total_cart_items = 4;
@@ -105,14 +105,24 @@ const ResponsiveAppBar = () => {
           Log in or Sign Up to Shop!
             
           </Box>
-            <Link to="/register">
+          <Link to="/login">
             <Button
-                key={login}
+                key='login'
                 onClick={handleCloseNavMenu}
 
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                {login}
+                Log In
+              </Button>
+            </Link>
+            <Link to="/register">
+            <Button
+                key='signup'
+                onClick={handleCloseNavMenu}
+
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                Sign Up
               </Button>
             </Link>
             
