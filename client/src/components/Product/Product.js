@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams, useLocation, useHistory } from "react-router-dom";
+import { Redirect, useParams, useLocation } from "react-router-dom";
 import { 
   Grid,
   Typography ,
@@ -11,12 +11,6 @@ import Navbar from '../Navbar/Navbar';
 
 export default function ProductPage() {
   const location = useLocation();
-  const history = useHistory();
-
-  if (typeof location.state === 'undefined') {
-    alert('You are not logged in');
-    history.push('/login');
-  }
 
 
   const {product_id} = useParams();
@@ -32,6 +26,11 @@ export default function ProductPage() {
       }
     )
   }, [])
+
+  if (typeof location.state === 'undefined') {
+    alert('You are not logged in');
+    return <Redirect to='./login'/>
+  }
   
   return (
     <div>

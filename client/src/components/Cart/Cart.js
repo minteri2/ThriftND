@@ -1,7 +1,7 @@
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
-import { Link, useParams, useLocation, useHistory } from "react-router-dom";
+import { Link, useParams, useLocation, Redirect } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import TextField from '@mui/material/TextField';
 import Navbar from '../Navbar/Navbar';
@@ -16,12 +16,6 @@ import {
 
 export default function Cart() {
   const location = useLocation();
-  const history = useHistory();
-
-  if (typeof location.state === 'undefined') {
-    alert('You are not logged in');
-    history.push('/login');
-  }
 
   const {username} = useParams();
 
@@ -41,6 +35,11 @@ export default function Cart() {
     data.products.map((product) => {
       total += product.price;
     });
+  }
+
+  if (typeof location.state === 'undefined') {
+    alert('You are not logged in');
+    return <Redirect to='./login'/>
   }
 
   return (

@@ -67,8 +67,14 @@ const ResponsiveAppBar = ( { user, cartItems } ) => {
     <AppBar position="relative" style={{background: '#2a2772'}}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-         
-          <img src={require('./logo.PNG')} alt="Logo-pic" width="100"/>
+          <Link to={{
+            pathname: '/home',
+            state: {
+              user: user,
+              cartItems: cartItems
+            }}}>
+            <img src={require('./logo.PNG')} alt="Logo-pic" width="100"/>
+          </Link>
 
          
           <Box sx={{ marginLeft: '20px', flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>

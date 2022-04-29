@@ -1,70 +1,66 @@
-import React from "react";
-import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
-import Button from '@mui/material/Button';
+import React, { useState, useEffect } from "react";
 import Navbar2 from '../Navbar/Navbar2';
+import SignUpForm from './SignUpForm';
+import { useHistory } from "react-router-dom";
+import { signUp } from "./AuthService";
 
 export default function SignUp() {
+  const history = useHistory();
+  const [newUser, setNewUser] = useState({
+    username: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    password: "",
+    confPassword: ""
+  });
+  const [add, setAdd] = useState(false);
+
+
+  useEffect(() => {
+
+    if (newUser && (newUser.password === newUser.confPassword) && add) {
+      signUp(newUser).then(
+        data => {
+          if(data.hasOwnProperty("error")) {
+            alert(data.error);
+          }
+          else {
+            alert(`Congrats ${newUser.firstName}, you have succesfully created a new user! Now you will be redirected to the login page so you can log in and browse some great listings!`);
+            history.push('/login');
+          }
+        }
+      )
+    }
+    if (add && (newUser.password !== newUser.confPassword)) {
+      alert("Passwords don't match");
+    }
+    setAdd(false);
+  }, [newUser, add]);
+
+  const onChangeHandler = (e) => {
+    e.preventDefault();
+    const { name, value: newValue } = e.target;
+
+    setNewUser({
+      ...newUser,
+      [name]: newValue
+    });
+  };
+
+  const onClickHandler = (e) => {
+    e.preventDefault();
+    setAdd(true);
+  }
+
+
   return (
     <div >
      
       <Navbar2/>
 
-      <Grid
-        container
-        direction="column"
-        justifyContent="space-around"
-        alignItems="center"
-        rowSpacing={2}
-      >
-      <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
-
-      </Grid>
-      <img src={require('./login_image.PNG')} alt="signup-pic" width="100%"/>
-      <h1>Sign up below:</h1>
-        
-        <Grid item xs={4}>
-          <TextField
-            required
-            id="outlined-required"
-            label="First Name"
-            placeholder="First Name"
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <TextField
-            required
-            id="outlined-required"
-            label="Last Name"
-            placeholder="Last Name"
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <TextField
-            required
-            id="outlined-required"
-            label="Email"
-            placeholder="Email"
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <TextField
-            id="outlined-required"
-            label="Phone Number"
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <TextField
-            id="outlined-password-input"
-            label="Password"
-            type="password"
-            autoComplete="current-password"
-          />
-        </Grid>      
-        <Grid item xs={4}>
-          <Button variant="contained">Sign Up</Button>         
-        </Grid>
-        </Grid>
+      <SignUpForm  onChange={onChangeHandler} onClick={onClickHandler}/>
       
         
     </div>

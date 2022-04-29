@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams, useLocation, useHistory } from "react-router-dom";
+import { useParams, useLocation, Redirect } from "react-router-dom";
 import { 
   Rating,
   Grid,
@@ -7,24 +7,11 @@ import {
 } from '@mui/material';
 import Navbar from '../Navbar/Navbar';
 import ProductList from '../Product/ProductList';
-import { Identity } from "@mui/base";
 
 export default function ProfilePage() {
   const location = useLocation();
-  const history = useHistory();
-
-  if (typeof location.state === 'undefined') {
-    alert('You are not logged in');
-    history.push('/login');
-  }
-
   const {username} = useParams();
-
   const [data, setData] = useState([{}]);
-  let rating = 0;
-  let available = [];
-  let sold = [];
-
   useEffect(() => {
     fetch(`/user?user=${username}`).then(
       res => res.json()
@@ -34,6 +21,17 @@ export default function ProfilePage() {
       }
     )
   }, [])
+
+  if (typeof location.state === 'undefined') {
+    alert('You are not logged in');
+    return <Redirect to='./login'/>
+  }
+
+  let rating = 0;
+  let available = [];
+  let sold = [];
+
+  
 
   if (typeof data.products !== 'undefined') {
     let tot = 0;
