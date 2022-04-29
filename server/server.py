@@ -14,6 +14,7 @@ app = Flask(__name__)
 
 # data = DataStore()
 
+######################## AUTHENTICATION SERVICES ########################
 
 @app.route("/login")
 def login():
@@ -60,7 +61,7 @@ def register():
   query =  """
         INSERT INTO user_table
         VALUES('""" + str(username) + "','" + str(fname) + "','" + str(lname) + "','" + str(email) + "','" + phone + "','" + str(password) + "',0)"
-  print('que pedo')
+
   try:
     c.execute(query)
     conn.commit()
@@ -94,10 +95,8 @@ def register():
         return {'error': 'Password is required.'}
       
     return {'error': err.message}
-
-  # for p in c:
-  #   print(p)
   
+######################## CART: GET, INSERT ########################
 
 @app.route("/cart")
 def products():
@@ -128,6 +127,40 @@ def products():
       products.append(curr_prod)
       data['products'] = products
   return data
+
+@app.route("/addCart")
+def addCart():
+  username = request.args.get('username')
+  prod_id = request.args.get('prod_id')
+  query =  """
+        INSERT INTO cart_item
+        VALUES ('""" + str(username) + "'," + str(prod_id) + ")"
+  try:
+    c.execute(query)
+    conn.commit()
+    return {'success': 'success'}
+  except cx_Oracle.IntegrityError as e:
+    err, = e.args
+    if err.code == 1:
+      return {'error': 'This item is already in your cart.'}
+    return {'error': err.message}
+
+@app.route("/reserve")
+def reserve():
+  username = request.args.get('username')
+  prod_id = request.args.get('prod_id')
+  query =  """
+        INSERT INTO reservation
+        VALUES (0,'""" + str(username) + "'," + str(prod_id) + ",sysdate)"
+  try:
+    c.execute(query)
+    conn.commit()
+    return {'success': 'success'}
+  except cx_Oracle.IntegrityError as e:
+    err, = e.args
+    if err.code == 1:
+      return {'error': 'This item is already reserved.'}
+    return {'error': err.message}
 
 @app.route("/user")
 def user():

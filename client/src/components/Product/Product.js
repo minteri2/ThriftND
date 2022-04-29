@@ -8,6 +8,7 @@ import {
   Rating
 } from '@mui/material';
 import Navbar from '../Navbar/Navbar';
+import { addToCart, reserveItem } from "../Cart/CartService";
 
 export default function ProductPage() {
   const location = useLocation();
@@ -15,27 +16,80 @@ export default function ProductPage() {
 
   const {product_id} = useParams();
 
-  const [data, setData] = useState([{}]);
+  const [prod, setProd] = useState([{}]);
+  const [fetched, setFetched] = useState(false)
+  const [add, setAdd] = useState(false);
+  const [reserv, setReserv] = useState(false);
 
   useEffect(() => {
-    fetch(`/product?prod_id=${product_id}`).then(
-      res => res.json()
-    ).then(
-      data => {
-        setData(data)
-      }
-    )
-  }, [])
+    if (!fetched) {
+      fetch(`/product?prod_id=${product_id}`).then(
+        res => res.json()
+      ).then(
+        data => {
+          setProd(data)
+          setFetched(true);
+          console.log(data);
+        }
+      )
+    }
+
+    if (add) {
+      addToCart(location.state.user, product_id).then(
+        data => {
+          if(data.hasOwnProperty("error")) {
+            alert(data.error);
+          }
+          else {
+            alert('Product succesfully added to your cart!');
+            location.state.cartItems += 1;
+          }
+          setAdd(false);
+        }
+      )
+    }
+
+    if (reserv) {
+      reserveItem(location.state.user, product_id).then(
+        data => {
+          if(data.hasOwnProperty("error")) {
+            alert(data.error);
+          }
+          else {
+            alert('Product succesfully reserved!');
+            setProd({
+              ...prod,
+              'product': {
+                ...prod.product,
+                'status' : 1
+              }
+            });
+          }
+          setReserv(false);
+        }
+      )
+    }
+    
+
+  }, [add, reserv])
 
   if (typeof location.state === 'undefined') {
     alert('You are not logged in');
     return <Redirect to='/login'/>
   }
+
+  const onClickAddHandler = () => {
+    setAdd(true);
+  }
+
+  const onClickReserveHandler = () => {
+    setReserv(true);
+  }
   
   return (
     <div>
       <Navbar user={location.state.user} cartItems={location.state.cartItems}/>
-      {(typeof data.product === 'undefined') ? (
+      {(typeof prod.product === 'undefined') ? (
           <p>Loading...</p>
         ): (
         <Grid
@@ -53,7 +107,7 @@ export default function ProductPage() {
                   width: '100%',
                 }}
                 alt="The house from the offer."
-                src={data.product.png_file}
+                src={prod.product.png_file}
               />
             </Grid>
             <Grid container 
@@ -72,7 +126,7 @@ export default function ProductPage() {
                   fontWeight: 'bold',
                   width:'100%',
                 }}>
-                {data.product.prod_name}
+                {prod.product.prod_name}
               </Typography>
               <Typography 
                 align="center"
@@ -80,7 +134,7 @@ export default function ProductPage() {
                 sx={{ 
                   width:'100%',
                 }}>
-                Sold By: {data.seller.first_name} {data.seller.last_name}
+                Sold By: {prod.seller.first_name} {prod.seller.last_name}
               </Typography>
               <Typography 
                 align="center"
@@ -88,7 +142,7 @@ export default function ProductPage() {
                 sx={{ 
                   width:'100%',
                 }}>
-                @{data.seller.username}
+                @{prod.seller.username}
               </Typography>
               <Typography 
                 variant="h5" 
@@ -97,13 +151,13 @@ export default function ProductPage() {
                   fontWeight: 'bold',
                   width:'100%',
                 }}> 
-                ${data.product.price.toFixed(2)}
+                ${prod.product.price.toFixed(2)}
               </Typography>
               <Grid item>
-                <Typography> {data.product.prod_desc}
+                <Typography> {prod.product.prod_desc}
                 </Typography>
               </Grid>
-              {data.product.status === 0 ? (
+              {prod.product.status === 0 ? (
                 <Grid container
                 justifyContent="flex-start"
                 direction="column"
@@ -113,15 +167,15 @@ export default function ProductPage() {
                   marginTop: '5px'
                 }}>
                   <Grid item>
-                    <Button variant="outlined">Reserve (24hr)</Button>        
+                    <Button variant="outlined" onClick={onClickReserveHandler}>Reserve (24hr)</Button>        
                   </Grid>
                   <Grid item>
-                    <Button variant="contained">Add to Cart</Button> 
+                    <Button variant="contained" onClick={onClickAddHandler}>Add to Cart</Button> 
                   </Grid>
                 </Grid>
-              ) : (data.product.status === 2 ? (
+              ) : (prod.product.status === 2 ? (
                 <Grid container>
-                  { data.hasOwnProperty("review") ? (
+                  { prod.hasOwnProperty("review") ? (
                     <Grid container
                     justifyContent="flex-start"
                     direction="column"
@@ -137,13 +191,13 @@ export default function ProductPage() {
                         }}>Review</Typography>
                       </Grid>
                       <Grid item>
-                        <Rating name="half-rating-read" defaultValue={data.review.rating} precision={0.1} readOnly size="large"/>
+                        <Rating name="half-rating-read" defaultValue={prod.review.rating} precision={0.1} readOnly size="large"/>
                       </Grid>
                       <Grid>
-                        <Typography>{data.review.review_desc}</Typography>
+                        <Typography>{prod.review.review_desc}</Typography>
                       </Grid> 
                       <Grid>
-                        <Typography>Reviewed by: {data.review.reviewer_username}</Typography>
+                        <Typography>Reviewed by: {prod.review.reviewer_username}</Typography>
                       </Grid> 
                     </Grid>
                     ) : (
