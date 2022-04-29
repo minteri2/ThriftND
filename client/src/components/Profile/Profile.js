@@ -20,7 +20,7 @@ export default function ProfilePage() {
         setData(data)
       }
     )
-  }, [])
+  }, [username])
 
   if (typeof location.state === 'undefined') {
     alert('You are not logged in');
