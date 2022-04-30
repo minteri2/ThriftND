@@ -114,16 +114,17 @@ def products():
 
   for i in prod_list:
     query =  """
-        SELECT prod_name, price, png_file
+        SELECT prod_id, prod_name, price, png_file
         FROM product
         WHERE prod_id=""" + str(i)
     
     c.execute(query)
     for j in c:
       curr_prod = {}
-      curr_prod['prod_name'] = j[0]
-      curr_prod['price'] = j[1]
-      curr_prod['png_file'] = j[2]
+      curr_prod['prod_id'] = j[0]
+      curr_prod['prod_name'] = j[1]
+      curr_prod['price'] = j[2]
+      curr_prod['png_file'] = j[3]
       products.append(curr_prod)
       data['products'] = products
   return data
@@ -139,6 +140,23 @@ def addCart():
     c.execute(query)
     conn.commit()
     return {'success': 'success'}
+  except cx_Oracle.IntegrityError as e:
+    err, = e.args
+    if err.code == 1:
+      return {'error': 'This item is already in your cart.'}
+    return {'error': err.message}
+
+@app.route("/removeCart")
+def removeCart():
+  username = request.args.get('username')
+  prod_id = request.args.get('prod_id')
+  query =  """
+        DELETE FROM cart_item
+        WHERE username='""" + str(username) + "' AND prod_id=" + str(prod_id)
+  try:
+    c.execute(query)
+    conn.commit()
+    return {'removed': int(prod_id)}
   except cx_Oracle.IntegrityError as e:
     err, = e.args
     if err.code == 1:

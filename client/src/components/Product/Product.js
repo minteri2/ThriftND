@@ -56,7 +56,7 @@ export default function ProductPage() {
             alert(data.error);
           }
           else {
-            alert('Product succesfully reserved!');
+            alert('Product succesfully reserved! You can now go to your Cart to view your reserved products.');
             setProd({
               ...prod,
               'product': {
