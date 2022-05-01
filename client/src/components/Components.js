@@ -13,6 +13,8 @@ import ProfilePage from "./Profile/Profile";
 import ProductPage from "./Product/Product";
 import Chats from "./Chat/Chats";
 import SearchResults from "./Search/SearchResults";
+import Group from "./Group/Group";
+import GroupPosts from "./Group/GroupPosts";
 
 
 export default function Components() {
@@ -27,6 +29,8 @@ export default function Components() {
         <Route path="/product/:product_id" component={ProductPage} />
         <Route path="/chats/:username" component={Chats} />
         <Route path="/results/:query" component={SearchResults} />
+        <Route path="/groups" exact component={Group} />
+        <Route path="/groups/:group_id" component={GroupPosts} />
         <Redirect to="/login" />
       </Switch>
     </Router>

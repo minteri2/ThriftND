@@ -16,6 +16,8 @@ import SendIcon from '@mui/icons-material/Send';
 import { useParams, useLocation, Redirect } from "react-router-dom";
 import Navbar from '../Navbar/Navbar';
 import { useState, useEffect } from "react";
+import { Link } from 'react-router-dom';
+
 
 const useStyles = makeStyles({
   table: {
@@ -36,150 +38,118 @@ const useStyles = makeStyles({
   }
 });
 
-export default function Chats() {
+export default function GroupPosts({ user, cartItems }) {
+
   const classes = useStyles();
-  const {username} = useParams();
+  const {group_id} = useParams();
   const location = useLocation();
 
 
   const [data, setData] = useState([{}]);
-  const [message, setMessage] = useState('');
+  const [fetched, setFetched] = useState(false);
   const [send, setSend] = useState(false);
-  const [activeChat, setActiveChat] = useState(false);
-  const [changeChat, setChangeChat] = useState(false);
+  const [post, setPost] = useState(false);
+
 
   useEffect(() => {
     
-    if (!changeChat){
-        fetch(`/chats?username=${username}`).then(
-        res => res.json()
+    if (!send){
+        fetch(`/grouppost?group_id=${group_id}&username=${location.state.user}`).then(
+            
+        res => {console.log(res);
+        return res.json();}
         ).then(
         data => {
-            setData(data)
+            setData(data);
+            setFetched(true);
+            console.log(data);
+
         }
+        
         )
     }
 
-    if(changeChat){
-        console.log(changeChat);
-      fetch(`/chat?username=${username}&chat_id=${changeChat}`).then(
-        res => res.json()
-           ).then(
-        mess => {
-          setActiveChat({
-              ... mess,
-              'chat_id': changeChat
-          });
-        setChangeChat(false);
-        setMessage('');
-        }
-      )
-    }
     if (send) {
         // sendMessage()
-        console.log(message);
-        fetch(`/send?username=${username}&chat_id=${activeChat.chat_id}&message=${message}`).then(
+        fetch(`/addpost?username=${location.state.user}&group_id=${group_id}&post_desc=${post}`).then(
             res => res.json()
             ).then(
               data => {
                 setSend(false);
                 console.log(data)
               }
-            )
+            );
+    }
           
     }
-    
 
-    },[changeChat, send]);
+    ,[send]);
 
 
-//   const onClickHandler = () => {
-//     setFlag(true);
-//   }
+
+    const onClickSendHandler = () => {
+        setSend(true);
+        
+    }
+
+    const onChangeHandler = (e) => {
+        setPost(e.target.value);
+    }
+
   if (typeof location.state === 'undefined') {
     alert('You are not logged in');
     return <Redirect to='/login'/>
   }
 
-const onClickHandler = (chat) => {
-    setChangeChat(chat.chat_id);
 
-}
-const onClickSendHandler = () => {
-    console.log(activeChat);
-    setSend(true);
-    setChangeChat(activeChat.chat_id)
-    
-}
-
-const onChangeHandler = (e) => {
-    e.preventDefault();
-    setMessage(e.target.value);
-}
 
 
 
   return (
       <div>
         <Navbar user={location.state.user} cartItems={location.state.cartItems}/>
-        {typeof data.chats === 'undefined' ? (
+        { typeof data.posts === 'undefined' ? (
             <p>Loading...</p>
         ) : (
             <div>
-            <Grid container>
             <Grid item xs={12} >
-                <Typography variant="h5" className="header-message">Chats</Typography>
-            </Grid>
-        </Grid>
-        <Grid container component={Paper} className={classes.chatSection}>
-            <Grid item xs={3} className={classes.borderRight500}>
-                
-               
-                <List>
-
-                {data.chats.map((chat) => (
-                    <ListItem button key={chat.name} onClick={()=>onClickHandler(chat)}>
-                    <ListItemIcon>
-                        <Avatar  />
-                    </ListItemIcon>
-                    <ListItemText >{chat.name}</ListItemText>
-                    <ListItemText align="right"></ListItemText>
-                </ListItem>
-                ))}
-                
-                </List>
+                <Typography variant="h5" className="header-message">Posts:</Typography>
             </Grid>
             <Grid item xs={9}>
                 <List className={classes.messageArea}>
-                {activeChat && (activeChat.messages.map((msg) => (
+                {(data.posts.map((curr_post) => ( 
                     <ListItem >
-                        <Grid container>
+                        <Grid 
+                        container
+                        style={{backgroundColor: '#EAF0FF'}}>
                             <Grid item xs={12}>
-                                <ListItemText align={msg.alignment} primary={msg.message_desc}></ListItemText>
+                                <ListItemText style={{color : 'blue'}} align="left" primary={curr_post.poster}></ListItemText>
+                                <ListItemText align="left" primary={curr_post.post_desc}></ListItemText>
                             </Grid>
                             <Grid item xs={12}>
-                                <ListItemText align={msg.alignment} secondary={msg.timestamp}></ListItemText>
+                                <ListItemText align="left" secondary={curr_post.timestamp}></ListItemText>
                             </Grid>
                         </Grid>
                     </ListItem>
-                    )))}
+                    )))} 
                     
                 </List>
                 <Divider />
                 <Grid container style={{padding: '20px'}}>
                     <Grid item xs={11}>
-                        <TextField value={message} id="outlined-basic-email" label="Type Something" fullWidth onChange={onChangeHandler}/>
+                        <TextField onChange={onChangeHandler} id="outlined-basic-email" label="Add Post" fullWidth />
                     </Grid>
                     <Grid xs={1} align="right">
                         <Fab color="primary" aria-label="add" ><SendIcon onClick={onClickSendHandler}/></Fab>
                     </Grid>
                 </Grid>
             </Grid>
-        </Grid>
-        </div>
+            </div>
         )}
         
-      </div>
+        
+        </div>     
+
+        
   );
 }
-

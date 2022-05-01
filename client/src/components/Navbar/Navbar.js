@@ -23,6 +23,7 @@ import Badge from '@mui/material/Badge';
 import ChatIcon from '@mui/icons-material/Chat';
 import SearchBar from '../Search/SearchBar';
 import { useHistory } from "react-router-dom";
+import GroupsIcon from '@mui/icons-material/Groups';
 
 
 
@@ -102,6 +103,20 @@ const ResponsiveAppBar = ( { user, cartItems } ) => {
                 color="inherit" >
                   <Badge badgeContent={cartItems} color="error">
                     <ShoppingCartIcon />
+                  </Badge>
+                  </IconButton>
+              </Link>
+              <Link to={{
+                pathname: `/groups`,
+                state: {
+                  user: user,
+                  cartItems: cartItems
+                }}}>
+                <IconButton size="large" 
+                aria-label="groups"
+                color="inherit" >
+                  <Badge badgeContent={cartItems} color="error">
+                    <GroupsIcon />
                   </Badge>
                   </IconButton>
               </Link>
