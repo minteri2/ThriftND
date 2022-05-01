@@ -35,7 +35,29 @@ def login():
   user['isAuthenticated'] = attrs[0]
   user['username'] = attrs[1]
   return user
+
+@app.route("/send")
+def send():
+  username = request.args.get('username')
+  chat_id = request.args.get('chat_id')
+  mess = request.args.get('message')
+  print(username)
+  print(chat_id)
+  print(mess)
+  # query =  """exec send_message("""+str(chat_id)+""",'"""+str(mess)+"""', '"""+str(username)+"""')"""
+  # proc =  """begin
+  #               send_message(47,'holaaaa', 'hlove');
+  #             end"""
   
+  try:
+    c.callproc('send_message',[chat_id,mess,username])
+    conn.commit()
+    return {'success': 'success'}
+  except cx_Oracle.IntegrityError as e:
+    err, = e.args
+    if err.code == 1:
+      return {'error': 'Failed to send message.'}
+    return {'error': err.message}
 
 @app.route("/register")
 def register():
@@ -271,7 +293,66 @@ def user():
   
   return data
 
-# CHATS
+###############GROUPS####################
+@app.route("/groups")
+def groups():
+  username_input = request.args.get('username')
+
+  query =  """
+        SELECT get_memberships('"""+str(username_input)+"""') from dual"""
+  c.execute(query)
+
+  cursor, = c.fetchone()
+  data = {}
+  data['groups'] = []
+  for x in cursor:
+    curr_group = {}
+    curr_group['group_id'] = x[0]
+    curr_group['group_name'] = x[1]
+    curr_group['new_posts'] = x[2]
+    data['groups'].append(curr_group)
+ 
+  return data
+
+@app.route("/grouppost")
+def grouppost():
+  group_id = request.args.get('group_id')
+  username_input = request.args.get('username')
+  query =  """
+        select get_group_posts("""+str(group_id)+""",'"""+str(username_input)+"""') from dual"""
+  c.execute(query)
+
+  cursor, = c.fetchone()
+  data = {}
+  data['posts'] = []
+  for x in cursor:
+    print(x)
+    curr_post = {}
+    curr_post['poster'] = x[0]
+    curr_post['post_desc'] = x[1]
+    curr_post['timestamp'] = x[2]
+    curr_post['seen'] = x[3]
+    data['posts'].append(curr_post)
+
+  return data
+
+
+@app.route("/addpost")
+def addpost():
+  username_input = request.args.get('username')
+  group_id = request.args.get('group_id')
+  post_desc = request.args.get('post_desc')
+  try:
+    c.callproc('add_post',[username_input,post_desc,group_id])
+    conn.commit()
+    return {'success': 'success'}
+  except cx_Oracle.IntegrityError as e:
+    err, = e.args
+    if err.code == 1:
+      return {'error': 'Failed to send message.'}
+    return {'error': err.message}
+
+###############CHATS################
 @app.route("/chats")
 def chats():
   username_input = request.args.get('username')
@@ -283,17 +364,37 @@ def chats():
 
   cursor, = c.fetchone()
   data = {}
+  data['chats'] = []
   for x in cursor:
-    print(x)
-    if x[1] not in data:
-      data[x[1]] = []
-    data[x[1]].append([x[2], x[3], x[4], x[5]])
+    chat = {}
+    chat['chat_id'] = x[0]
+    chat['name'] = x[2]
+    chat['unread'] = x[3]
+    data['chats'].append(chat)
   print(data)
+   
+  return data
 
-    
-  return ';a;a;'
-
-
+@app.route("/chat")
+def chat():
+  username_input = request.args.get('username')
+  chat_id = request.args.get('chat_id')
+  data = {}
+  
+  query =  """
+      SELECT get_messages(""" + str(chat_id) + """,'""" +str(username_input)+"""')
+      FROM dual"""
+  c.execute(query)
+  cursor, = c.fetchone()
+  data['messages'] = []
+  for i in cursor:
+    curr_mess = {}
+    curr_mess['message_desc'] = i[0]
+    curr_mess['timestamp'] = i[1]
+    curr_mess['alignment'] = i[2]
+    data['messages'].append(curr_mess)
+  print(data)
+  return data
 
 @app.route("/product")
 def product():
