@@ -11,7 +11,7 @@ import Homepage from "./Homepage/Homepage";
 import Cart from "./Cart/Cart";
 import ProfilePage from "./Profile/Profile";
 import ProductPage from "./Product/Product";
-// import Chats from "./Chat/Chats";
+import Chats from "./Chat/Chats";
 import SearchResults from "./Search/SearchResults";
 
 
@@ -25,7 +25,7 @@ export default function Components() {
         <Route path="/cart/:username" component={Cart} />
         <Route path="/user/:username" component={ProfilePage} />
         <Route path="/product/:product_id" component={ProductPage} />
-        {/* <Route path="/chats/:username" component={Chats} /> */}
+        <Route path="/chats/:username" component={Chats} />
         <Route path="/results/:query" component={SearchResults} />
         <Redirect to="/login" />
       </Switch>
