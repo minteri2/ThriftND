@@ -13,6 +13,7 @@ import ProfilePage from "./Profile/Profile";
 import ProductPage from "./Product/Product";
 import Chats from "./Chat/Chats";
 import SearchResults from "./Search/SearchResults";
+import UploadProductPage from "./Product/UploadProduct";
 
 
 export default function Components() {
@@ -27,6 +28,7 @@ export default function Components() {
         <Route path="/product/:product_id" component={ProductPage} />
         <Route path="/chats/:username" component={Chats} />
         <Route path="/results/:query" component={SearchResults} />
+        <Route path="/upload/product" component={UploadProductPage} />
         <Redirect to="/login" />
       </Switch>
     </Router>

@@ -28,7 +28,6 @@ import { useHistory } from "react-router-dom";
 
 
 const login = 'Log Out';
-const total_cart_items = 4;
 
 const ResponsiveAppBar = ( { user } ) => {
 
@@ -105,8 +104,7 @@ const ResponsiveAppBar = ( { user } ) => {
               <Link to={{
                 pathname: `/chats/${user}`,
                 state: {
-                  user: user,
-                  cartItems: cartItems
+                  user: user
                 }}}>
                 <IconButton
                   size="large"

@@ -2,8 +2,8 @@ from flask import Flask
 from flask import request
 import cx_Oracle
 
-# cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\maint\Documents\AdvDb\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
-cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\erome\Downloads\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
+cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\maint\Documents\AdvDb\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
+# cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\erome\Downloads\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
 
 conn = cx_Oracle.connect('minteri2/minteri2@18.205.219.249/xe') # if needed, place an 'r' before any parameter in order to address special characters such as '\'. For example, if your user name contains '\', you'll need to place 'r' before the user name: user=r'User Name'
 c = conn.cursor()
@@ -340,12 +340,46 @@ def product():
     data["review"] = review
   return data
 
+@app.route("/addProduct")
+def addProd():
+  username = request.args.get('username')
+  pname = request.args.get('prod_name')
+  pdesc = request.args.get('prod_desc')
+  category = request.args.get('category')
+  price = request.args.get('price')
+  age = request.args.get('age')
+  photo = request.args.get('photo')
+
+
+  try:
+    return_val = c.callfunc("upload_prod", str, [username, pname, pdesc, category, price, age, photo])
+    conn.commit()
+    if return_val =='success':
+      return {'success': 'success'}
+    else:
+      
+      if '02290' in return_val:
+        if 'AGE' in returv_val:
+          return {'error': 'Age has to be >= 0'}
+        elif 'PRICE' in err.message:
+          return {'error': 'Price has to be > 0'}
+      elif '01400' in return_val:
+        if 'PROD_NAME' in err.message:
+          return {'error': 'Product name is required.'}
+        elif 'CATEGORY' in err.message:
+          return {'error': 'Category is required.'}
+        elif 'PRICE' in err.message:
+          return {'error': 'Price is required.'}
+      
+    return {'error': err.message}
+  except:
+    return {'error':'error'}
+
 
 @app.route("/search")
 def search():
   data = {}
   q = str(request.args.get('q'))
-  q = q.replace("_", " ")
   query = """
         SELECT prod_id, prod_name, price, png_file, status
         FROM product

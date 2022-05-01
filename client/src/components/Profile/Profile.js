@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useLocation, Redirect } from "react-router-dom";
+import { useParams, useLocation, Redirect, Link } from "react-router-dom";
 import { 
   Rating,
   Grid,
-  Typography 
+  Typography ,
+  Button
 } from '@mui/material';
 import Navbar from '../Navbar/Navbar';
 import ProductList from '../Product/ProductList';
@@ -78,6 +79,13 @@ export default function ProfilePage() {
         <Grid item xs={12}>
           <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{data.user.email} | {data.user.phone}</Typography>
         </Grid>
+        <Link to={{
+          pathname: `/upload/product`,
+          state: {
+            user: username
+          }}}>
+            <Button variant="contained">Upload Product</Button>
+          </Link>
         {available.length > 0 && 
           (
           <Grid 
