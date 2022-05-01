@@ -30,7 +30,7 @@ import { useHistory } from "react-router-dom";
 const login = 'Log Out';
 const total_cart_items = 4;
 
-const ResponsiveAppBar = ( { user, cartItems } ) => {
+const ResponsiveAppBar = ( { user } ) => {
 
   const history = useHistory();
 
@@ -44,8 +44,7 @@ const ResponsiveAppBar = ( { user, cartItems } ) => {
       history.push({
         pathname: `/results/${q}`,
         state: {
-          user: user,
-          cartItems: cartItems
+          user: user
         }});
       setSearch(false);
     }
@@ -70,8 +69,7 @@ const ResponsiveAppBar = ( { user, cartItems } ) => {
           <Link to={{
             pathname: '/home',
             state: {
-              user: user,
-              cartItems: cartItems
+              user: user
             }}}>
             <img src={require('./logo.PNG')} alt="Logo-pic" width="100"/>
           </Link>
@@ -94,13 +92,12 @@ const ResponsiveAppBar = ( { user, cartItems } ) => {
               <Link to={{
                 pathname: `/cart/${user}`,
                 state: {
-                  user: user,
-                  cartItems: cartItems
+                  user: user
                 }}}>
                 <IconButton size="large" 
                 aria-label="shopping-cart"
                 color="inherit" >
-                  <Badge badgeContent={cartItems} color="error">
+                  <Badge  color="error">
                     <ShoppingCartIcon />
                   </Badge>
                   </IconButton>
@@ -126,8 +123,7 @@ const ResponsiveAppBar = ( { user, cartItems } ) => {
               <Link to={{
                   pathname: `/user/${user}`,
                   state: {
-                    user: user,
-                    cartItems: cartItems
+                    user: user
                   }}}> 
                 <IconButton sx={{ p: 0 }}>
                   <Avatar alt={`${user}`}/>

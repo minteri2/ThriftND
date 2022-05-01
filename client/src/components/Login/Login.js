@@ -36,21 +36,15 @@ export default function Login() {
   }, [login, username, password]);
 
   if (typeof data.isAuthenticated !== 'undefined') {
-    if (data.isAuthenticated === true) {
+    if (data.isAuthenticated) {
       history.push({
         pathname: '/home',
         state: {
-          user: username,
-          cartItems: data.cartItems
+          user: username
         }});
     }
     else {
-      if (data.hasOwnProperty("notFound")) {
-        alert("User not found");
-      }
-      else {
-        alert(`Incorrect password for user ${username}`);
-      }
+      alert("We can't seem to find your account.");
     }
 
     setData({});
