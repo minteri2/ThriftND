@@ -42,7 +42,6 @@ export default function ProductPage() {
           }
           else {
             alert('Product succesfully added to your cart!');
-            location.state.cartItems += 1;
           }
           setAdd(false);
         }
@@ -88,7 +87,7 @@ export default function ProductPage() {
   
   return (
     <div>
-      <Navbar user={location.state.user} cartItems={location.state.cartItems}/>
+      <Navbar user={location.state.user} />
       {(typeof prod.product === 'undefined') ? (
           <p>Loading...</p>
         ): (

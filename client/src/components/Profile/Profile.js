@@ -56,7 +56,7 @@ export default function ProfilePage() {
 
 
     <div>
-      <Navbar user={location.state.user} cartItems={location.state.cartItems}/>
+      <Navbar user={location.state.user} />
       {(typeof data.user === 'undefined') ? (
           <p>Loading...</p>
         ): (
@@ -90,7 +90,7 @@ export default function ProfilePage() {
               <Typography variant="h4">Available Products:</Typography>
             </Grid>
             <Grid item xs={10}>
-              <ProductList cartItems={location.state.cartItems} user={location.state.user} products={available}/> 
+              <ProductList  user={location.state.user} products={available}/> 
             </Grid>
           </Grid> )  
         }  
@@ -108,7 +108,7 @@ export default function ProfilePage() {
               <Rating name="half-rating-read" defaultValue={rating} precision={0.1} readOnly size="large"/>
             </Grid>
             <Grid item xs={10}>
-              <ProductList cartItems={location.state.cartItems} user={location.state.user} products={sold}/>
+              <ProductList  user={location.state.user} products={sold}/>
             </Grid>
           </Grid>  
         

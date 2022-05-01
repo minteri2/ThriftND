@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import "../../App.css";
 
 
-export default function UserResults({ cartItems, authUser, users }) {
+export default function UserResults({ authUser, users }) {
 
   const linkStyle = {
     color: "white",
@@ -22,12 +22,11 @@ export default function UserResults({ cartItems, authUser, users }) {
       gap={2}
       justifyContent="space-between">
       {users.map((user, i) => (
-        <Grid item xs={2} className="bgpurple" justifyContent="center">
+        <Grid item xs={3} sm={2} className="bgpurple" justifyContent="center">
           <Link to={{
                 pathname: `/user/${user.username}`,
                 state: {
-                  user: authUser,
-                  cartItems: cartItems
+                  user: authUser
                 }}} style={linkStyle}>
               <Typography align="center">{user.first_name} {user.last_name}</Typography>
               <Typography align="center">@{user.username}</Typography>
