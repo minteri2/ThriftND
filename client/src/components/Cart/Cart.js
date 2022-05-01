@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
-import { removeFromCart } from './CartService';
+import { removeFromCart, addToCart, removeReserved } from './CartService';
 
 export default function Cart() {
   const location = useLocation();
@@ -24,20 +24,20 @@ export default function Cart() {
 
   const [prods, setProds] = useState([{}]);
   const [remove, setRemove] = useState(false);
-  const [fetched, setFetched] = useState(false)
+  const [unreserve, setUnreserve] = useState(false);
+  const [addReserved, setAddReserved] = useState(false);
 
   useEffect(() => {
 
-    if (!fetched) {
-      fetch(`/cart?username=${username}`).then(
-        res => res.json()
-      ).then(
-        data => {
-          setProds(data)
-          setFetched(true)  
-        }
-      )
-    }
+      if (!remove && !unreserve && !addReserved) {
+        fetch(`/cart?username=${username}`).then(
+          res => res.json()
+        ).then(
+          data => {
+            setProds(data)
+          }
+        )
+      }
 
     if (remove) {
       removeFromCart(username, remove).then(
@@ -46,21 +46,7 @@ export default function Cart() {
             alert(data.error);
           }
           else {
-            total = 0;
-            prods.products.map((product, i) => {
-              if (data.removed == product.prod_id) {
-                const prod_copy = prods.products.slice();
-                prod_copy.splice(i,1);
-                setProds({
-                  ... prods,
-                  'products': prod_copy
-                })
-              }
-              else {
-                total += product.price;
-              }
-            })
-            location.state.cartItems -= 1;
+            alert('Product successfully removed from cart.')
 
           }
           setRemove(false); 
@@ -68,16 +54,41 @@ export default function Cart() {
       )
     }
 
+    if (addReserved) {
+      addToCart(username, addReserved.prod_id).then(
+        data => {
+          if(data.hasOwnProperty("error")) {
+            alert(data.error);
+          }
+          else {
+            alert('Product succesfully added to cart.')
+          } 
+          setAddReserved(false);
+        })
+    }
 
+    if (unreserve) {
+      console.log(unreserve);
+      removeReserved(unreserve).then(
+        data => {
+          if(data.hasOwnProperty("error")) {
+            alert(data.error);
+          }
+          else {
+            alert('Product removed from reserved list');
+            
+          }
+          setUnreserve(false);
+    })
+  }
 
-  }, [remove])
+  }, [remove, addReserved, unreserve])
 
   let total = 0;
   if (typeof prods.products !== 'undefined') {
     prods.products.map((product) => {
       total += product.price;
     });
-    location.state.cartItems = prods.products.length;
   }
 
   if (typeof location.state === 'undefined') {
@@ -89,12 +100,21 @@ export default function Cart() {
     setRemove(prod_id);
   }
 
+  const onAddReservClickHandler = (product, i) => {
+    setAddReserved({
+      ... product,
+      'id': i
+    });
+  }
 
 
+  const onRemoveReservClickHandler = (prod_id) => {
+    setUnreserve(prod_id);
+  }
 
   return (
     <div>
-      <Navbar user={location.state.user} cartItems={location.state.cartItems}/>
+      <Navbar user={location.state.user} />
       {typeof prods.products === 'undefined' ? (
         <Grid>
           <h1>Shopping Cart:</h1>
@@ -109,17 +129,19 @@ export default function Cart() {
           
           //sx={{ bgcolor: 'primary.main' }}
         >
-          <Grid container xs={7} justifyContent="space-evenly">
+          <Grid container xs={12} md={7} justifyContent="space-evenly" sx={{borderRight: 'solid',
+                height: 'fit-content'}}>
 
           
             <Grid container 
-              xs={8} 
+              xs={8}
               justifyContent="flex-start"
               direction="column"
               alignItems="left"
               rowSpacing={2}
               sx={{
-                marginTop: '20px'
+                marginTop: '20px',
+                height: 'fit-content'
               }}
             >
               <h1>Shopping Cart:</h1>
@@ -156,10 +178,10 @@ export default function Cart() {
                 {prods.products.map((product, i) => (
                   <div>
                     <Grid container xs={12} sx={{
-                      marginBottom: '20px'
+                      marginBottom: '20px',
                       }}
                     >
-                      <Grid item xs={8}>
+                      <Grid item xs={12} md={8}>
                         <ImageListItem key={product.png_file}>
                           <img
                             src={`${product.png_file}`}
@@ -167,16 +189,16 @@ export default function Cart() {
                             alt={product.prod_name}
                             loading="lazy"
                           />
-                        </ImageListItem>  
+                        </ImageListItem> 
                       </Grid>
-                      <Grid container xs rowSpacing={1} justifyContent='center' sx={{alignContent: 'center'}}>
+                      <Grid container xs  rowSpacing={1} justifyContent='center' sx={{alignContent: 'center'}}>
                         <Grid item xs={12}>
                           <Typography sx={{fontWeight: 'bold'}} variant="h5" align="center">{product.prod_name}</Typography>
                         </Grid>
                         <Grid item xs={12}>
                           <Typography variant="h6" align="center">${product.price.toFixed(2)}</Typography>
                         </Grid>
-                        <Grid item justifyContent="center" xs={5}>
+                        <Grid container justifyContent="center" >
                           <Button onClick={() => onRemoveClickHandler(product.prod_id)} variant="outlined" startIcon={<DeleteIcon />}>
                             Remove
                           </Button>
@@ -193,17 +215,49 @@ export default function Cart() {
               </ImageList>
             </Grid>
           </Grid>
-          {/* <Divider orientation="vertical" 
-          sx={{
-                      height:'100%',
+          <Grid container xs={12} md justifyContent="space-evenly" alignItems='flex-start' sx={{alignContent: 'flex-start'}}>
+          <h1>Reserved Items:</h1>
+          <ImageList cols={1}>
+                {prods.reservations.map((product, i) => (
+                  <div>
+                    <Grid container xs={12} justifyContent='center' sx={{
+                      marginBottom: '20px',
+                      }}
+                    >
+                      <Grid item xs={12}>
+                        <ImageListItem key={product.png_file} width="250px" 
+                            height="250px">
+                          <img
+                            src={`${product.png_file}`}
+                            srcSet={`${product.png_file}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                            alt={product.prod_name}
+                            loading="lazy"
+                            
+                          />
+                        </ImageListItem> 
+                        <Grid item xs={12}>
+                          <Typography sx={{fontWeight: 'bold'}} variant="h5" align="center">{product.prod_name}</Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Typography variant="h6" align="center">${product.price.toFixed(2)}</Typography>
+                        </Grid>
+                        <Grid container xs={12} justifyContent="space-around" >
+                          {!product.inCart && <Button variant="contained" onClick={() => onAddReservClickHandler(product,i)}>Add to Cart</Button>} 
+                          <Button onClick={() => onRemoveReservClickHandler(product.prod_id)} variant="outlined" startIcon={<DeleteIcon />}>
+                            Remove
+                          </Button>
+                        </Grid>
+                      </Grid>
+            
+                    </Grid>
+                    <Divider sx={{
+                      marginBottom: "10px",
                       borderBottomWidth: 5
-                    }}
-                    /> 
-          <Grid xs={4}>
-            <Grid item>
-              <Typography>hola</Typography>
-            </Grid>
-          </Grid> */}
+                    }}/> 
+                  </div>
+                ))}
+              </ImageList>
+          </Grid>
         </Grid>
       )} 
     </div>

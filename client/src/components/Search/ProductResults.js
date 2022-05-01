@@ -8,7 +8,7 @@ import {
 import { Link } from 'react-router-dom';
 
 
-export default function ProductResults({ cartItems, user, products }) {
+export default function ProductResults({  user, products }) {
 
   return (
     <ImageList 
@@ -19,8 +19,7 @@ export default function ProductResults({ cartItems, user, products }) {
         <Link to={{
           pathname: `/product/${prod.prod_id}`,
           state: {
-            user: user,
-            cartItems: cartItems
+            user: user
             
           }}}>
           <ImageListItem key={i}>

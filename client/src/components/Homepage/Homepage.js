@@ -18,7 +18,7 @@ export default function Homepage() {
   
   return (
     <div>
-      <Navbar user={location.state.user} cartItems={location.state.cartItems}/>
+      <Navbar user={location.state.user} />
       <Grid
         container
         direction="row"

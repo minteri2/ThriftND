@@ -2,8 +2,8 @@ from flask import Flask
 from flask import request
 import cx_Oracle
 
-# cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\maint\Documents\AdvDb\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
-cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\erome\Downloads\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
+cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\maint\Documents\AdvDb\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
+# cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\erome\Downloads\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
 
 conn = cx_Oracle.connect('minteri2/minteri2@18.205.219.249/xe') # if needed, place an 'r' before any parameter in order to address special characters such as '\'. For example, if your user name contains '\', you'll need to place 'r' before the user name: user=r'User Name'
 c = conn.cursor()
@@ -22,28 +22,18 @@ def login():
   username = request.args.get('username')
   password = request.args.get('password')
   query =  """
-        SELECT username, user_pass
-        FROM user_table
-        WHERE username='""" + str(username) + "'"
+        SELECT login('""" + str(username) + "','" + str(password) + """')
+        FROM dual"""
   c.execute(query)
-  user = {}
-  user['isAuthenticated'] = False
   
-  for u in c:
-    if password == u[1]:
-      user['username'] = u[0]
-      user['isAuthenticated'] = True
-      query =  """
-          SELECT *
-          FROM cart_item
-          WHERE username='""" + str(username) + "'"
-      c.execute(query)
-      c.fetchall()
-      user['cartItems'] = c.rowcount
+  obj, = c.fetchone()
+  user = {}
+  attrs = []
+  for attr in obj.type.attributes:
+    attrs.append(getattr(obj, attr.name))
 
-  if c.rowcount == 0:
-    user['notFound'] = True
-
+  user['isAuthenticated'] = attrs[0]
+  user['username'] = attrs[1]
   return user
 
 @app.route("/send")
@@ -126,21 +116,28 @@ def register():
 def products():
   username = request.args.get('username')
   query =  """
-        SELECT *
+        SELECT prod_id
         FROM cart_item
         WHERE username='""" + str(username) + "'"
   c.execute(query)
-  prod_list = []
+  prod_list = list(c)
+
+  query =  """
+        SELECT prod_id
+        FROM reservation
+        WHERE username='""" + str(username) + "'"
+  c.execute(query)
+  reserv_list = list(c)
   data = {}
   products = []
-  for p in c:
-    prod_list.append(p[1])
+  reservations = []
+  
 
   for i in prod_list:
     query =  """
-        SELECT prod_id, prod_name, price, png_file
+        SELECT prod_id, prod_name, price, png_file, status
         FROM product
-        WHERE prod_id=""" + str(i)
+        WHERE prod_id=""" + str(i[0])
     
     c.execute(query)
     for j in c:
@@ -149,8 +146,36 @@ def products():
       curr_prod['prod_name'] = j[1]
       curr_prod['price'] = j[2]
       curr_prod['png_file'] = j[3]
+      curr_prod['status'] = j[4]
+      curr_prod['inCart'] = 0
       products.append(curr_prod)
-      data['products'] = products
+      if i in reserv_list:
+        producto = curr_prod.copy()
+        producto['inCart'] = 1
+        reservations.append(producto)
+
+
+  for i in reserv_list:
+    if i not in prod_list:
+
+      query =  """
+          SELECT prod_id, prod_name, price, png_file, status
+          FROM product
+          WHERE prod_id=""" + str(i[0])
+      
+      c.execute(query)
+      for j in c:
+        curr_prod = {}
+        curr_prod['prod_id'] = j[0]
+        curr_prod['prod_name'] = j[1]
+        curr_prod['price'] = j[2]
+        curr_prod['png_file'] = j[3]
+        curr_prod['status'] = j[4]
+        curr_prod['inCart'] = 0
+        reservations.append(curr_prod)
+
+  data['products'] = products
+  data['reservations'] = reservations
   return data
 
 @app.route("/addCart")
@@ -193,7 +218,7 @@ def reserve():
   prod_id = request.args.get('prod_id')
   query =  """
         INSERT INTO reservation
-        VALUES (0,'""" + str(username) + "'," + str(prod_id) + ",sysdate)"
+        VALUES (""" + str(prod_id) + ",'" + str(username) + "',sysdate)"
   try:
     c.execute(query)
     conn.commit()
@@ -202,6 +227,22 @@ def reserve():
     err, = e.args
     if err.code == 1:
       return {'error': 'This item is already reserved.'}
+    return {'error': err.message}
+
+@app.route("/unreserve")
+def unreserve():
+  prod_id = request.args.get('prod_id')
+  query =  """
+        DELETE FROM reservation
+        WHERE prod_id=""" + str(prod_id)
+  try:
+    c.execute(query)
+    conn.commit()
+    return {'success': 'success'}
+  except cx_Oracle.IntegrityError as e:
+    err, = e.args
+    if err.code == 1:
+      return {'error': 'This item does not exist.'}
     return {'error': err.message}
 
 @app.route("/user")
@@ -400,12 +441,46 @@ def product():
     data["review"] = review
   return data
 
+@app.route("/addProduct")
+def addProd():
+  username = request.args.get('username')
+  pname = request.args.get('prod_name')
+  pdesc = request.args.get('prod_desc')
+  category = request.args.get('category')
+  price = request.args.get('price')
+  age = request.args.get('age')
+  photo = request.args.get('photo')
+
+
+  try:
+    return_val = c.callfunc("upload_prod", str, [username, pname, pdesc, category, price, age, photo])
+    conn.commit()
+    if return_val =='success':
+      return {'success': 'success'}
+    else:
+      
+      if '02290' in return_val:
+        if 'AGE' in returv_val:
+          return {'error': 'Age has to be >= 0'}
+        elif 'PRICE' in err.message:
+          return {'error': 'Price has to be > 0'}
+      elif '01400' in return_val:
+        if 'PROD_NAME' in err.message:
+          return {'error': 'Product name is required.'}
+        elif 'CATEGORY' in err.message:
+          return {'error': 'Category is required.'}
+        elif 'PRICE' in err.message:
+          return {'error': 'Price is required.'}
+      
+    return {'error': err.message}
+  except:
+    return {'error':'error'}
+
 
 @app.route("/search")
 def search():
   data = {}
   q = str(request.args.get('q'))
-  q = q.replace("_", " ")
   query = """
         SELECT prod_id, prod_name, price, png_file, status
         FROM product

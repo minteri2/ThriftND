@@ -39,7 +39,7 @@ export default function SearchResults() {
 
 
     <div>
-      <Navbar user={location.state.user} cartItems={location.state.cartItems}/>
+      <Navbar user={location.state.user} />
       {(typeof data.products === 'undefined') ? (
           <p>Loading...</p>
         ): (
@@ -65,8 +65,8 @@ export default function SearchResults() {
             <Grid item xs={12}>
               <Typography variant="h4">Products:</Typography>
             </Grid>
-            <Grid item xs={10}>
-              <ProductResults cartItems={location.state.cartItems} user={location.state.user} products={data.products}/> 
+            <Grid item xs={12} md={10}>
+              <ProductResults user={location.state.user} products={data.products}/> 
             </Grid>
           </Grid> 
           ) : (
@@ -78,12 +78,12 @@ export default function SearchResults() {
           justifyContent="space-around"
           alignItems="center"
           direction="column"
-          xs={10}>
+          xs={12} md={10}>
             <Grid item>
               <Typography variant="h4" align="left">Users:</Typography>
             </Grid>
             <Grid container >
-              <UserResults cartItems={location.state.cartItems} authUser={location.state.user} users={data.users}/>
+              <UserResults  authUser={location.state.user} users={data.users}/>
             </Grid>
           </Grid>           
           ) : (

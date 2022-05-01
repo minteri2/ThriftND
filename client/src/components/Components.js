@@ -12,9 +12,10 @@ import Cart from "./Cart/Cart";
 import ProfilePage from "./Profile/Profile";
 import ProductPage from "./Product/Product";
 import Chats from "./Chat/Chats";
-import SearchResults from "./Search/SearchResults";
+import SearchResults from "./Search/SearchResults";\
 import Group from "./Group/Group";
 import GroupPosts from "./Group/GroupPosts";
+import UploadProductPage from "./Product/UploadProduct";
 
 
 export default function Components() {
@@ -31,6 +32,7 @@ export default function Components() {
         <Route path="/results/:query" component={SearchResults} />
         <Route path="/groups" exact component={Group} />
         <Route path="/groups/:group_id" component={GroupPosts} />
+        <Route path="/upload/product" component={UploadProductPage} />
         <Redirect to="/login" />
       </Switch>
     </Router>

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useLocation, Redirect } from "react-router-dom";
+import { useParams, useLocation, Redirect, Link } from "react-router-dom";
 import { 
   Rating,
   Grid,
-  Typography 
+  Typography ,
+  Button
 } from '@mui/material';
 import Navbar from '../Navbar/Navbar';
 import ProductList from '../Product/ProductList';
@@ -56,7 +57,7 @@ export default function ProfilePage() {
 
 
     <div>
-      <Navbar user={location.state.user} cartItems={location.state.cartItems}/>
+      <Navbar user={location.state.user} />
       {(typeof data.user === 'undefined') ? (
           <p>Loading...</p>
         ): (
@@ -78,6 +79,13 @@ export default function ProfilePage() {
         <Grid item xs={12}>
           <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{data.user.email} | {data.user.phone}</Typography>
         </Grid>
+        <Link to={{
+          pathname: `/upload/product`,
+          state: {
+            user: username
+          }}}>
+            <Button variant="contained">Upload Product</Button>
+          </Link>
         {available.length > 0 && 
           (
           <Grid 
@@ -90,7 +98,7 @@ export default function ProfilePage() {
               <Typography variant="h4">Available Products:</Typography>
             </Grid>
             <Grid item xs={10}>
-              <ProductList cartItems={location.state.cartItems} user={location.state.user} products={available}/> 
+              <ProductList  user={location.state.user} products={available}/> 
             </Grid>
           </Grid> )  
         }  
@@ -108,7 +116,7 @@ export default function ProfilePage() {
               <Rating name="half-rating-read" defaultValue={rating} precision={0.1} readOnly size="large"/>
             </Grid>
             <Grid item xs={10}>
-              <ProductList cartItems={location.state.cartItems} user={location.state.user} products={sold}/>
+              <ProductList  user={location.state.user} products={sold}/>
             </Grid>
           </Grid>  
         

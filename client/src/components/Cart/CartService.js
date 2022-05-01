@@ -21,3 +21,11 @@ export const reserveItem = (username, prod_id) => {
     data => {return data}
   )
 }
+
+export const removeReserved = (prod_id) => {
+  return fetch(`/unreserve?prod_id=${prod_id}`).then(
+    res => res.json()
+  ).then(
+    data => {return data}
+  )
+}
