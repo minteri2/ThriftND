@@ -2,11 +2,12 @@ from flask import Flask
 from flask import request
 import cx_Oracle
 
-cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\maint\Documents\AdvDb\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
-# cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\erome\Downloads\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
+# cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\maint\Documents\AdvDb\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
+cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\erome\Downloads\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
 
 conn = cx_Oracle.connect('minteri2/minteri2@18.205.219.249/xe') # if needed, place an 'r' before any parameter in order to address special characters such as '\'. For example, if your user name contains '\', you'll need to place 'r' before the user name: user=r'User Name'
 c = conn.cursor()
+
 
 app = Flask(__name__)
 # class DataStore():
@@ -44,6 +45,7 @@ def login():
     user['notFound'] = True
 
   return user
+  
 
 @app.route("/register")
 def register():
@@ -228,6 +230,29 @@ def user():
   
   return data
 
+# CHATS
+@app.route("/chats")
+def chats():
+  username_input = request.args.get('username')
+
+  query =  """
+        SELECT get_chats('""" + str(username_input) + """')
+        FROM dual"""
+  c.execute(query)
+
+  cursor, = c.fetchone()
+  data = {}
+  for x in cursor:
+    print(x)
+    if x[1] not in data:
+      data[x[1]] = []
+    data[x[1]].append([x[2], x[3], x[4], x[5]])
+  print(data)
+
+    
+  return ';a;a;'
+
+
 
 @app.route("/product")
 def product():
@@ -283,8 +308,8 @@ def search():
   query = """
         SELECT prod_id, prod_name, price, png_file, status
         FROM product
-        WHERE (lower(prod_name) like '%""" + q + """%' 
-        OR lower(prod_desc) like '%""" + q + """%')
+        WHERE (lower(prod_name) like '%""" + q.lower() + """%' 
+        OR lower(prod_desc) like '%""" + q.lower() + """%')
         AND status < 2"""
   c.execute(query)
   products = []
@@ -302,8 +327,8 @@ def search():
   query = """
         SELECT username, first_name, last_name
         FROM user_table
-        WHERE lower(username) like '%""" + q + """%' 
-        OR lower(concat(first_name, concat(' ', last_name))) like '%""" + q + """%'"""
+        WHERE lower(username) like '%""" + q.lower() + """%' 
+        OR lower(concat(first_name, concat(' ', last_name))) like '%""" + q.lower() + """%'"""
   c.execute(query)
 
   users = []

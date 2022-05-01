@@ -105,7 +105,12 @@ const ResponsiveAppBar = ( { user, cartItems } ) => {
                   </Badge>
                   </IconButton>
               </Link>
-              <Link to="/home">
+              <Link to={{
+                pathname: `/chats/${user}`,
+                state: {
+                  user: user,
+                  cartItems: cartItems
+                }}}>
                 <IconButton
                   size="large"
                   aria-label="chat-notifications"
