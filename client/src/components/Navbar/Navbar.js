@@ -103,15 +103,14 @@ const ResponsiveAppBar = ( { user } ) => {
                   </IconButton>
               </Link>
               <Link to={{
-                pathname: `/groups`,
+                pathname: `/groups/5`,
                 state: {
-                  user: user,
-                  cartItems: cartItems
+                  user: user
                 }}}>
                 <IconButton size="large" 
                 aria-label="groups"
                 color="inherit" >
-                  <Badge badgeContent={cartItems} color="error">
+                  <Badge color="error">
                     <GroupsIcon />
                   </Badge>
                   </IconButton>

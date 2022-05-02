@@ -12,7 +12,7 @@ import Cart from "./Cart/Cart";
 import ProfilePage from "./Profile/Profile";
 import ProductPage from "./Product/Product";
 import Chats from "./Chat/Chats";
-import SearchResults from "./Search/SearchResults";\
+import SearchResults from "./Search/SearchResults";
 import Group from "./Group/Group";
 import GroupPosts from "./Group/GroupPosts";
 import UploadProductPage from "./Product/UploadProduct";

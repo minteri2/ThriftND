@@ -64,7 +64,11 @@ export default function UploadProductPage() {
           }
           else {
             alert(`New product succesfully uploaded`);
-            history.push('/login');
+            history.push({
+              pathname: `/user/${location.state.user}`,
+              state: {
+                user: location.state.user
+              }});;
           }
         })
       setAdd(false);
