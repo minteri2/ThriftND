@@ -1,46 +1,27 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-import Divider from '@material-ui/core/Divider';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Avatar from '@material-ui/core/Avatar';
-import Fab from '@material-ui/core/Fab';
+import { makeStyles } from '@mui/styles';
+import { 
+  Paper,
+  Grid,
+  Button,
+  Divider,
+  TextField,
+  Typography,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Avatar,
+  Fab
+
+ } from '@mui/material';
+
 import SendIcon from '@mui/icons-material/Send';
-import { useParams, useLocation, Redirect } from "react-router-dom";
+import { useParams, useLocation, Redirect, Link } from "react-router-dom";
 import Navbar from '../Navbar/Navbar';
 import { useState, useEffect } from "react";
-import { Link } from 'react-router-dom';
-
-
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
-  },
-  chatSection: {
-    width: '100%'
-  },
-  headBG: {
-      backgroundColor: '#e0e0e0'
-  },
-  borderRight500: {
-      borderRight: '1px solid #e0e0e0'
-  },
-  messageArea: {
-    height: '70vh',
-    overflowY: 'auto'
-  }
-});
 
 export default function Groups() {
-
-  const classes = useStyles();
   const location = useLocation();
 
 
@@ -90,8 +71,8 @@ export default function Groups() {
                 <Typography variant="h5" className="header-message">Groups You Belong To:</Typography>
             </Grid>
         </Grid>
-        <Grid container component={Paper} className={classes.chatSection}>
-            <Grid item xs={3} className={classes.borderRight500}>
+        <Grid container component={Paper} style={{width: '100%'}}>
+            <Grid item xs={3} style={{borderRight: '1px solid #e0e0e0'}}>
                
                 
                 <List>

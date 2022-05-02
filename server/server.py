@@ -41,9 +41,7 @@ def send():
   username = request.args.get('username')
   chat_id = request.args.get('chat_id')
   mess = request.args.get('message')
-  print(username)
-  print(chat_id)
-  print(mess)
+
   # query =  """exec send_message("""+str(chat_id)+""",'"""+str(mess)+"""', '"""+str(username)+"""')"""
   # proc =  """begin
   #               send_message(47,'holaaaa', 'hlove');
@@ -326,7 +324,6 @@ def grouppost():
   data = {}
   data['posts'] = []
   for x in cursor:
-    print(x)
     curr_post = {}
     curr_post['poster'] = x[0]
     curr_post['post_desc'] = x[1]
@@ -371,7 +368,7 @@ def chats():
     chat['name'] = x[2]
     chat['unread'] = x[3]
     data['chats'].append(chat)
-  print(data)
+    
    
   return data
 
@@ -393,7 +390,6 @@ def chat():
     curr_mess['timestamp'] = i[1]
     curr_mess['alignment'] = i[2]
     data['messages'].append(curr_mess)
-  print(data)
   return data
 
 @app.route("/product")

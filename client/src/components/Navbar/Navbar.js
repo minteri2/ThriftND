@@ -103,7 +103,7 @@ const ResponsiveAppBar = ( { user } ) => {
                   </IconButton>
               </Link>
               <Link to={{
-                pathname: `/groups/5`,
+                pathname: `/groups`,
                 state: {
                   user: user
                 }}}>

@@ -77,7 +77,7 @@ export default function ProfilePage() {
           <Typography variant="h4" sx={{ fontWeight: 'bold' }}>@{data.user.username}</Typography>
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{data.user.email} | {data.user.phone}</Typography>
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{data.user.email} | ({data.user.phone.substring(0,3)}) {data.user.phone.substring(3,6)}-{data.user.phone.substring(6)}</Typography>
         </Grid>
         <Link to={{
           pathname: `/upload/product`,
