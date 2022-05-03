@@ -130,12 +130,12 @@ export default function Cart() {
           
           //sx={{ bgcolor: 'primary.main' }}
         >
-          <Grid container xs={12} md={7} justifyContent="space-evenly" sx={{borderRight: 'solid',
+          <Grid container xs={12}   sx={{borderRight: 'solid',
                 height: 'fit-content'}}>
 
           
             <Grid container 
-              xs={8}
+              xs={10}
               justifyContent="flex-start"
               direction="column"
               alignItems="left"
@@ -148,11 +148,11 @@ export default function Cart() {
               <h1>Shopping Cart:</h1>
             </Grid>
             <Grid container 
-              xs={4} 
-              justifyContent="flex-start"
+              xs={2} 
+              // justifyContent="flex-start"
               direction="column"
               alignItems="right"
-              rowSpacing={2}
+              // rowSpacing={2}
               sx={{
                 marginTop: '20px'
               }}
@@ -166,6 +166,7 @@ export default function Cart() {
                 }}}>
                 <Button variant="contained">Checkout</Button>
               </Link>    
+              
 
             </Grid>
 
@@ -187,17 +188,18 @@ export default function Cart() {
                       marginBottom: '20px',
                       }}
                     >
-                      <Grid item xs={12} md={8}>
+                      {/* <Grid item xs={12} md={8}> */}
                         <ImageListItem key={product.png_file}>
                           <img
                             src={`${product.png_file}`}
+                            style={{height:300}}
                             srcSet={`${product.png_file}?w=248&fit=crop&auto=format&dpr=2 2x`}
                             alt={product.prod_name}
                             loading="lazy"
                           />
                         </ImageListItem> 
-                      </Grid>
-                      <Grid container xs  rowSpacing={1} justifyContent='center' sx={{alignContent: 'center'}}>
+                      {/* </Grid> */}
+                      <Grid container xs  rowSpacing={1} justifyContent='center' sx={{ alignContent: 'center'}}>
                         <Grid item xs={12}>
                           <Typography sx={{fontWeight: 'bold'}} variant="h5" align="center">{product.prod_name}</Typography>
                         </Grid>
@@ -221,35 +223,71 @@ export default function Cart() {
               </ImageList>
             </Grid>
           </Grid>
-          <Grid container xs={12} md justifyContent="space-evenly" alignItems='flex-start' sx={{alignContent: 'flex-start'}}>
-          <h1>Reserved Items:</h1>
-          <ImageList cols={1}>
+          <Grid container 
+              xs={8}
+              justifyContent="flex-start"
+              direction="column"
+              alignItems="left"
+              rowSpacing={2}
+              sx={{
+                marginTop: '20px',
+                height: 'fit-content'
+              }}
+            >
+              <h1>Reserved Items:</h1>
+            </Grid>
+            <Grid container 
+              xs={4} 
+              justifyContent="flex-start"
+              direction="column"
+              alignItems="right"
+              rowSpacing={2}
+              sx={{
+                marginTop: '20px'
+              }}
+            >
+                
+
+            </Grid>
+             <Grid container 
+              xs={12} 
+              justifyContent="flex-start"
+              direction="column"
+              alignItems="left"
+              rowSpacing={10}
+              sx={{
+                marginTop: '20px'
+              }}
+            >
+      
+              <ImageList cols={1}>
                 {prods.reservations.map((product, i) => (
                   <div>
-                    <Grid container xs={12} justifyContent='center' sx={{
+                    <Grid container xs={12} sx={{
                       marginBottom: '20px',
                       }}
                     >
-                      <Grid item xs={12}>
-                        <ImageListItem key={product.png_file} width="250px" 
-                            height="250px">
+                      {/* <Grid item xs={12} md={8}> */}
+                        <ImageListItem key={product.png_file}>
                           <img
                             src={`${product.png_file}`}
+                            style={{height:300}}
                             srcSet={`${product.png_file}?w=248&fit=crop&auto=format&dpr=2 2x`}
                             alt={product.prod_name}
                             loading="lazy"
-                            
                           />
                         </ImageListItem> 
+                      {/* </Grid> */}
+                      <Grid container xs  rowSpacing={1} justifyContent='center' sx={{alignContent: 'center'}}>
                         <Grid item xs={12}>
                           <Typography sx={{fontWeight: 'bold'}} variant="h5" align="center">{product.prod_name}</Typography>
                         </Grid>
                         <Grid item xs={12}>
                           <Typography variant="h6" align="center">${product.price.toFixed(2)}</Typography>
                         </Grid>
-                        <Grid container xs={12} justifyContent="space-around" >
-                          {!product.inCart && <Button variant="contained" onClick={() => onAddReservClickHandler(product,i)}>Add to Cart</Button>} 
-                          <Button onClick={() => onRemoveReservClickHandler(product.prod_id)} variant="outlined" startIcon={<DeleteIcon />}>
+                        <Grid container justifyContent="center" >
+                        {!product.inCart && <Button variant="contained" onClick={() => onAddReservClickHandler(product,i)} sx={{marginRight:'15px'}}>Add to Cart</Button>} 
+                      <Button onClick={() => onRemoveReservClickHandler(product.prod_id)} variant="outlined" startIcon={<DeleteIcon />}>
                             Remove
                           </Button>
                         </Grid>
@@ -263,8 +301,8 @@ export default function Cart() {
                   </div>
                 ))}
               </ImageList>
+            </Grid>
           </Grid>
-        </Grid>
       )} 
     </div>
   );

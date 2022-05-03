@@ -364,6 +364,20 @@ def addpost():
       return {'error': 'Failed to add post.'}
     return {'error': err.message}
 
+@app.route("/join")
+def join():
+  username_input = request.args.get('username')
+  group_id = request.args.get('group_id')
+  try:
+    query =  """
+        insert into user_membership
+        values('"""+str(username_input)+"""', """+str(group_id)+""",sysdate)"""
+    c.execute(query)
+  except:
+    return {"result": "failed"}
+  return {"success": "success"}
+
+
 @app.route("/creategroup")
 def creategroup():
   groupname_input = request.args.get('groupname')
@@ -634,6 +648,22 @@ def search():
     user["last_name"] = y[2]
     users.append(user)
   data['users'] = users
+
+  query = """
+        SELECT group_id, group_name
+        FROM group_table
+        WHERE lower(group_name) like '%""" + q.lower() + """%'
+        OR lower(group_desc) like '%""" + q.lower() + """%'"""
+  c.execute(query)
+ 
+  groups = []
+  for y in c:
+    print(y)
+    group = {}
+    group["group_id"] = y[0]
+    group["group_name"] = y[1]
+    groups.append(group)
+  data['groups'] = groups
   
   return data
 
