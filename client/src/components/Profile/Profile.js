@@ -112,14 +112,17 @@ export default function ProfilePage() {
           <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{data.user.email} | ({data.user.phone.substring(0,3)}) {data.user.phone.substring(3,6)}-{data.user.phone.substring(6)}</Typography>
         </Grid>
         {(data.user.username == location.state.user) ? (
-        <Link className='links' to={{
-          pathname: `/upload/product`,
-          state: {
-            user: username
-          }}}>
-      
-            <Button variant="contained">Upload Product</Button>
-          </Link>
+          <Grid item xs>
+            <Typography variant='h6'>Your Balance: ${data.user.balance.toFixed(2)}</Typography>
+            <Link className='links' to={{
+              pathname: `/upload/product`,
+              state: {
+                user: username
+              }}}>
+          
+                <Button variant="contained">Upload Product</Button>
+              </Link>
+          </Grid>
         ) : (
               <Button variant="contained" onClick={onClickHandler} >Chat</Button>
         )}
