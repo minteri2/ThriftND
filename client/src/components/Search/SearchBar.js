@@ -28,8 +28,8 @@ const SearchBar = ({ onSubmit, onChange }) => {
 
   return (
     <div>
-        <TextField onChange={onChange} id="standard-basic" placeholder='Search...' variant="standard" />
-        <IconButton onClick={onSubmit}>
+        <TextField onChange={onChange} sx={{ input: { color: 'white' } }} id="standard-basic" placeholder='Search...' variant="standard" />
+        <IconButton onClick={onSubmit} style={{color: 'white'}}>
           <SearchIcon/>
         </IconButton>
     </div>

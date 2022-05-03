@@ -16,6 +16,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import { removeFromCart, addToCart, removeReserved } from './CartService';
+import '../../App.css';
 
 export default function Cart() {
   const location = useLocation();
@@ -157,7 +158,7 @@ export default function Cart() {
               }}
             >
               <h3>Your total is: ${total.toFixed(2)}</h3>
-              <Link to="/register">
+              <Link to="/register" className='links'>
                 <Button variant="contained">Checkout</Button>
               </Link>    
 

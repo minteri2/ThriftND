@@ -22,52 +22,65 @@ import Navbar from '../Navbar/Navbar';
 import { useState, useEffect } from "react";
 
 export default function Chats() {
-  const {username} = useParams();
   const location = useLocation();
 
 
-  const [data, setData] = useState([{}]);
+  const [data, setData] = useState(false);
   const [message, setMessage] = useState('');
   const [send, setSend] = useState(false);
-  const [activeChat, setActiveChat] = useState(false);
+  const [activeChat, setActiveChat] = useState({});
   const [changeChat, setChangeChat] = useState(false);
 
   useEffect(() => {
     
-    if (!changeChat){
-        fetch(`/chats?username=${username}`).then(
+    if (!data){
+        fetch(`/chats?username=${location.state.user}`).then(
         res => res.json()
         ).then(
         data => {
+            console.log(activeChat);
             setData(data)
+            if (typeof location.state.chatUser !== 'undefined'){
+                setActiveChat({
+                    'name': location.state.chatName
+                })
+                setChangeChat(location.state.chatUser);
+            }
+            
         }
         )
     }
 
     if(changeChat){
-        console.log(changeChat);
-      fetch(`/chat?username=${username}&chat_id=${changeChat}`).then(
+      fetch(`/chat?username=${location.state.user}&chat_id=${changeChat}`).then(
         res => res.json()
            ).then(
         mess => {
+            console.log('yes')
           setActiveChat({
-              ... mess,
+              ...activeChat,
+              ...mess,
               'chat_id': changeChat
           });
         setChangeChat(false);
-        setMessage('');
+        
         }
       )
     }
-    if (send) {
-        // sendMessage()
-        console.log(message);
-        fetch(`/send?username=${username}&chat_id=${activeChat.chat_id}&message=${message}`).then(
+
+    if (message && send) {
+        fetch(`/send?username=${location.state.user}&chat_id=${activeChat.chat_id}&message=${message}`).then(
             res => res.json()
             ).then(
               data => {
+                const chat_copy = activeChat.messages.slice();
+                chat_copy.push(data.message);
+                setActiveChat({
+                    ... activeChat,
+                    'messages': chat_copy
+                });
                 setSend(false);
-                console.log(data)
+                setMessage('');
               }
             )
           
@@ -75,7 +88,6 @@ export default function Chats() {
     
 
     },[changeChat, send]);
-
 
 //   const onClickHandler = () => {
 //     setFlag(true);
@@ -85,14 +97,16 @@ export default function Chats() {
     return <Redirect to='/login'/>
   }
 
+
 const onClickHandler = (chat) => {
     setChangeChat(chat.chat_id);
+    setActiveChat({
+        'name': chat.name
+    })
 
 }
 const onClickSendHandler = () => {
-    console.log(activeChat);
     setSend(true);
-    setChangeChat(activeChat.chat_id)
     
 }
 
@@ -134,10 +148,14 @@ const onChangeHandler = (e) => {
                 </List>
             </Grid>
             <Grid item xs={9}>
+                <Grid item xs>
+                {activeChat.name && <Typography variant="h4" align='center'>{activeChat.name}</Typography>}
+                </Grid>
+                <Divider />
                 <List style={{
                   height: '70vh',
                   overflowY: 'auto'}}>
-                {activeChat && (activeChat.messages.map((msg) => (
+                {activeChat.messages && (activeChat.messages.map((msg) => (
                     <ListItem >
                         <Grid container>
                             <Grid item xs={12}>
@@ -152,14 +170,16 @@ const onChangeHandler = (e) => {
                     
                 </List>
                 <Divider />
+                {activeChat.chat_id && (
                 <Grid container style={{padding: '20px'}}>
                     <Grid item xs={11}>
                         <TextField value={message} id="outlined-basic-email" label="Type Something" fullWidth onChange={onChangeHandler}/>
                     </Grid>
                     <Grid xs={1} align="right">
-                        <Fab color="primary" aria-label="add" ><SendIcon onClick={onClickSendHandler}/></Fab>
+                        <Fab onClick={onClickSendHandler} color="primary" aria-label="add" ><SendIcon /></Fab>
                     </Grid>
                 </Grid>
+                )}
             </Grid>
         </Grid>
         </div>

@@ -20,6 +20,7 @@ import SendIcon from '@mui/icons-material/Send';
 import { useParams, useLocation, Redirect, Link } from "react-router-dom";
 import Navbar from '../Navbar/Navbar';
 import { useState, useEffect } from "react";
+import '../../App.css';
 
 export default function Groups() {
   const location = useLocation();
@@ -29,8 +30,7 @@ export default function Groups() {
   const [fetched, setFetched] = useState(false);
 
   useEffect(() => {
-    
-    if (!fetched){
+  
         fetch(`/groups?username=${location.state.user}`).then(
         res => res.json()
         ).then(
@@ -42,13 +42,10 @@ export default function Groups() {
         }
         
         )
-    }
 
     
 
     },[]);
-
-
 
   if (typeof location.state === 'undefined') {
     alert('You are not logged in');
@@ -78,7 +75,7 @@ export default function Groups() {
                 <List>
 
                  {data.groups.map((curr_group) => (  
-                     <Link to={{
+                     <Link className='links' to={{
                         pathname: `/groups/${curr_group.group_id}`,
                         state: {
                           user: location.state.user
@@ -96,6 +93,17 @@ export default function Groups() {
                 </List>
             </Grid>
         </Grid>
+        
+        <Grid container component={Paper} style={{width: '100%'}}>
+        <Link className='links' to={{
+          pathname: `/creategroup`,
+          state: {
+            user: location.state.user
+          }}}>
+          <Button variant="contained">Create New Group</Button>
+          </Link>
+        </Grid>
+
         </div>
         )
          

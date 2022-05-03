@@ -21,6 +21,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Badge from '@mui/material/Badge';
 import ChatIcon from '@mui/icons-material/Chat';
+import '../../App.css';
 
 
 
@@ -105,7 +106,7 @@ const ResponsiveAppBar = () => {
           Log in or Sign Up to Shop!
             
           </Box>
-          <Link to="/login">
+          <Link className='links' to="/login">
             <Button
                 key='login'
                 onClick={handleCloseNavMenu}
@@ -115,7 +116,7 @@ const ResponsiveAppBar = () => {
                 Log In
               </Button>
             </Link>
-            <Link to="/register">
+            <Link className='links' to="/register">
             <Button
                 key='signup'
                 onClick={handleCloseNavMenu}
