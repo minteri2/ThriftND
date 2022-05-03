@@ -24,6 +24,7 @@ import ChatIcon from '@mui/icons-material/Chat';
 import SearchBar from '../Search/SearchBar';
 import { useHistory } from "react-router-dom";
 import GroupsIcon from '@mui/icons-material/Groups';
+import '../../App.css';
 
 
 
@@ -78,7 +79,7 @@ const ResponsiveAppBar = ( { user } ) => {
           <Box sx={{ marginLeft: '20px', flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             <SearchBar onSubmit={onSubmitHandler} onChange={onChangeHandler}/>
           </Box>
-            <Link to="/login">
+            <Link to="/login" className='links'>
             <Button
                 key={login}
 
@@ -96,10 +97,8 @@ const ResponsiveAppBar = ( { user } ) => {
                 }}}>
                 <IconButton size="large" 
                 aria-label="shopping-cart"
-                color="inherit" >
-                  <Badge  color="error">
+                 style={{color: 'white'}}>
                     <ShoppingCartIcon />
-                  </Badge>
                   </IconButton>
               </Link>
               <Link to={{
@@ -109,25 +108,21 @@ const ResponsiveAppBar = ( { user } ) => {
                 }}}>
                 <IconButton size="large" 
                 aria-label="groups"
-                color="inherit" >
-                  <Badge color="error">
+                style={{color: 'white'}}>
                     <GroupsIcon />
-                  </Badge>
                   </IconButton>
               </Link>
               <Link to={{
-                pathname: `/chats/${user}`,
+                pathname: `/chats`,
                 state: {
                   user: user
                 }}}>
                 <IconButton
                   size="large"
                   aria-label="chat-notifications"
-                  color="inherit"
+                  style={{color: 'white'}}
                 >
-                <Badge badgeContent={17} color="error">
                   <ChatIcon />
-                </Badge>
                 </IconButton>
               </Link>
               

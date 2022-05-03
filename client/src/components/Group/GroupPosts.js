@@ -27,24 +27,24 @@ export default function GroupPosts() {
   const location = useLocation();
 
 
-  const [data, setData] = useState([{}]);
-  const [fetched, setFetched] = useState(false);
+  const [postData, setPostData] = useState([{}]);
   const [send, setSend] = useState(false);
-  const [post, setPost] = useState(false);
+  const [post, setPost] = useState('');
+  const [fetched, setFetched] = useState(false);
 
 
   useEffect(() => {
     
-    if (!send){
+    if (!fetched){
         fetch(`/grouppost?group_id=${group_id}&username=${location.state.user}`).then(
             
         res => {console.log(res);
         return res.json();}
         ).then(
         data => {
-            setData(data);
-            setFetched(true);
+            setPostData(data);
             console.log(data);
+            setFetched(true);
 
         }
         
@@ -57,10 +57,17 @@ export default function GroupPosts() {
             res => res.json()
             ).then(
               data => {
+                const posts_copy = postData.posts.slice()
+                posts_copy.push(data.post);
+                setPostData({
+                    ... postData,
+                    'posts': posts_copy
+                })
                 setSend(false);
-                console.log(data)
+                setPost('')
               }
             );
+        
     }
           
     }
@@ -90,7 +97,7 @@ export default function GroupPosts() {
   return (
       <div>
         <Navbar user={location.state.user} cartItems={location.state.cartItems}/>
-        { typeof data.posts === 'undefined' ? (
+        { typeof postData.posts === 'undefined' ? (
             <p>Loading...</p>
         ) : (
             <div>
@@ -101,7 +108,7 @@ export default function GroupPosts() {
                 <List style={{
                   height: '70vh',
                   overflowY: 'auto'}}>
-                {(data.posts.map((curr_post) => ( 
+                {(postData.posts.map((curr_post) => ( 
                     <ListItem >
                         <Grid 
                         container
@@ -121,10 +128,10 @@ export default function GroupPosts() {
                 <Divider />
                 <Grid container style={{padding: '20px'}}>
                     <Grid item xs={11}>
-                        <TextField onChange={onChangeHandler} id="outlined-basic-email" label="Add Post" fullWidth />
+                        <TextField onChange={onChangeHandler} value={post} id="outlined-basic-email" label="Add Post" fullWidth />
                     </Grid>
                     <Grid xs={1} align="right">
-                        <Fab color="primary" aria-label="add" ><SendIcon onClick={onClickSendHandler}/></Fab>
+                        <Fab onClick={onClickSendHandler} color="primary" aria-label="add" ><SendIcon/></Fab>
                     </Grid>
                 </Grid>
             </Grid>

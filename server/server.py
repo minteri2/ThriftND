@@ -2,8 +2,9 @@ from flask import Flask
 from flask import request
 import cx_Oracle
 
-cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\maint\Documents\AdvDb\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
-# cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\erome\Downloads\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
+
+# cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\maint\Documents\AdvDb\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
+cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\erome\Downloads\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
 
 conn = cx_Oracle.connect('minteri2/minteri2@18.205.219.249/xe') # if needed, place an 'r' before any parameter in order to address special characters such as '\'. For example, if your user name contains '\', you'll need to place 'r' before the user name: user=r'User Name'
 c = conn.cursor()
@@ -50,7 +51,13 @@ def send():
   try:
     c.callproc('send_message',[chat_id,mess,username])
     conn.commit()
-    return {'success': 'success'}
+    timestamp = c.callfunc('get_time', str)
+    return {'message': 
+    {
+      'message_desc': str(mess),
+      'alignment': 'right',
+      'timestamp': timestamp
+    }}
   except cx_Oracle.IntegrityError as e:
     err, = e.args
     if err.code == 1:
@@ -342,12 +349,58 @@ def addpost():
   try:
     c.callproc('add_post',[username_input,post_desc,group_id])
     conn.commit()
+    timestamp = c.callfunc('get_time', str)
+    return {'post': 
+    {
+      'post_desc': str(post_desc),
+      'poster': str(username_input),
+      'timestamp': timestamp,
+      'seen' : 0
+    }}
+
+  except cx_Oracle.IntegrityError as e:
+    err, = e.args
+    if err.code == 1:
+      return {'error': 'Failed to add post.'}
+    return {'error': err.message}
+
+@app.route("/creategroup")
+def creategroup():
+  groupname_input = request.args.get('groupname')
+  groupdesc_input = request.args.get('groupdesc')
+  groupcreator_input = request.args.get('username')
+  try:
+    c.callproc('insert_group',[groupname_input, groupdesc_input])
+    conn.commit()
+  except cx_Oracle.IntegrityError as e:
+    err, = e.args
+    if err.code == 1:
+      return {'error': 'Failed to create group.'}
+    return {'error': err.message}
+  query =  """
+        select get_curr_groupid from dual"""
+  c.execute(query)
+
+  cursor, = c.fetchone()
+  try:
+    c.callproc('insert_membership',[groupcreator_input, cursor])
+    conn.commit()
+  except cx_Oracle.IntegrityError as e:
+    err, = e.args
+    if err.code == 1:
+      return {'error': 'Failed to insert membership.'}
+    return {'error': err.message}
+  try:
+    c.callproc('add_post',[groupcreator_input,str(str(groupcreator_input)+" created this group"),cursor])
+    conn.commit()
     return {'success': 'success'}
   except cx_Oracle.IntegrityError as e:
     err, = e.args
     if err.code == 1:
-      return {'error': 'Failed to send message.'}
+      return {'error': 'Failed to add post.'}
     return {'error': err.message}
+  return {'message': 'Successfully created group!'}
+
 
 ###############CHATS################
 @app.route("/chats")
@@ -366,11 +419,27 @@ def chats():
     chat = {}
     chat['chat_id'] = x[0]
     chat['name'] = x[2]
-    chat['unread'] = x[3]
+    # chat['unread'] = x[3]
     data['chats'].append(chat)
     
    
   return data
+@app.route("/newchat")
+def newchat():
+  username_1 = request.args.get('username_1')
+  username_2 = request.args.get('username_2')
+  try:
+    c.callproc('insert_chat',[username_1,username_2])
+    conn.commit()
+    chatid = c.callfunc('get_chat',int)
+    print(chatid)
+    return {'success': str(chatid)}
+  except cx_Oracle.IntegrityError as e:
+    err, = e.args
+    if err.code == 1:
+      return {'error': 'Failed to add chat.'}
+    return {'error': err.message}
+  return 'lal'
 
 @app.route("/chat")
 def chat():
