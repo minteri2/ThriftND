@@ -106,11 +106,19 @@ export default function ProfilePage() {
           <Typography variant="h2" sx={{ fontWeight: 'bold' }}>{data.user.first_name} {data.user.last_name}</Typography>
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="h4" sx={{ fontWeight: 'bold' }}>@{data.user.username}</Typography>
+          <h2> </h2>
+         </Grid>
+        
+        <Grid item xs={12}>
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>@{data.user.username} | {data.user.email} | ({data.user.phone.substring(0,3)}) {data.user.phone.substring(3,6)}-{data.user.phone.substring(6)}</Typography>
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{data.user.email} | ({data.user.phone.substring(0,3)}) {data.user.phone.substring(3,6)}-{data.user.phone.substring(6)}</Typography>
+        <h2> </h2>        
         </Grid>
+        <Grid item xs={12}>
+          <Typography variant="h2" > </Typography>
+        </Grid>
+        
         {(data.user.username == location.state.user) ? (
           <Grid item xs>
             <Typography variant='h6'>Your Balance: ${data.user.balance.toFixed(2)}</Typography>
@@ -135,7 +143,7 @@ export default function ProfilePage() {
           direction="column"
           xs={10}>
             <Grid item xs={12}>
-              <Typography variant="h4">Available Products:</Typography>
+              <Typography variant="h4">Products for sale:</Typography>
             </Grid>
             <Grid item xs={10}>
               <ProductList  user={location.state.user} products={available}/> 

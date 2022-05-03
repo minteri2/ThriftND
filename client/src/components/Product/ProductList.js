@@ -24,6 +24,7 @@ export default function ProductList({ products, user }) {
           <ImageListItem key={i}>
             <img
               src={`${prod.png_file}`}
+              style={{height : 300}}
               srcSet={`${prod.png_file}?w=248&fit=crop&auto=format&dpr=2 2x`}
               alt={prod.prod_name}
               loading="lazy"
