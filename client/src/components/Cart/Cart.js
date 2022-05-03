@@ -158,7 +158,12 @@ export default function Cart() {
               }}
             >
               <h3>Your total is: ${total.toFixed(2)}</h3>
-              <Link to="/register" className='links'>
+              
+              <Link to={{
+                pathname: `/checkout`,
+                state: {
+                  user: location.state.user
+                }}}>
                 <Button variant="contained">Checkout</Button>
               </Link>    
 
