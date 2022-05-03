@@ -47,6 +47,7 @@ export default function Checkout() {
         res => res.json()
         ).then(
         data => {
+          alert('Congrats! Your order has been placed');
           history.push({
             pathname: `/order`,
             state: {
