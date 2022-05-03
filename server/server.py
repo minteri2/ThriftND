@@ -472,6 +472,59 @@ def addProd():
   except:
     return {'error':'error'}
 
+#############CHECHOUT################
+@app.route("/getpayments")
+def getpayments():
+  data = {}
+  username = request.args.get('username')
+  query = """SELECT pay_method_id, card_number, TO_CHAR(expiration_date, 'MM/YY') FROM payment_method where username = '"""+str(username)+"""'"""
+  c.execute(query)
+  data['payment_methods'] = []
+  for i in c:
+    curr_payment = {}
+    curr_payment['payment_method_id'] = i[0]
+    curr_payment['card_number'] = str(i[1])
+    curr_payment['exp_date'] = str(i[2])
+    data['payment_methods'].append(curr_payment)
+  print(data)
+
+  return data
+
+
+
+@app.route("/checkout")
+def checkout():
+  data = {}
+  username = request.args.get('username')
+  pay_method = request.args.get('pay')
+ 
+
+  query = """
+  SELECT get_total_checkout('""" + str(username) + """') from dual"""
+  c.execute(query)
+  total = 0
+  for i in c:
+    total = i[0]
+  query =  """
+        SELECT prod_id
+        FROM cart_item
+        WHERE username='""" + str(username) + "'"
+  
+  c.execute(query)
+  products = []
+  for i in c:
+    products.append(i[0])
+
+  c.callproc('add_order',[username,total])
+  conn.commit()
+  order_id = c.callfunc("get_curr_order_id", int)
+  c.callproc('add_ct', [order_id, pay_method, total, username])
+  conn.commit()
+  for prod in products:
+    c.callproc('add_order_item',[order_id,prod])
+    conn.commit()
+  
+  return {'success': "success"}
 
 @app.route("/search")
 def search():
@@ -482,7 +535,8 @@ def search():
         FROM product
         WHERE (lower(prod_name) like '%""" + q.lower() + """%' 
         OR lower(prod_desc) like '%""" + q.lower() + """%')
-        AND status < 2"""
+        AND status = 0
+        AND rownum <= 20"""
   c.execute(query)
   products = []
   for y in c:
