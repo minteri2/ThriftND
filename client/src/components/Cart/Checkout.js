@@ -1,128 +1,117 @@
-import * as React from 'react';
-import CssBaseline from '@mui/material/CssBaseline';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Toolbar from '@mui/material/Toolbar';
-import Paper from '@mui/material/Paper';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import Button from '@mui/material/Button';
+
 import Link from '@mui/material/Link';
-import Typography from '@mui/material/Typography';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import AddressForm from './AddressForm';
-import PaymentForm from './PaymentForm';
-import Review from './Review';
+import React from "react";
+import TextField from '@mui/material/TextField';
+import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputAdornment from '@mui/material/InputAdornment';
+import { useParams, useLocation, Redirect, useHistory } from "react-router-dom";
+import { useState, useEffect } from "react";
+import Navbar from '../Navbar/Navbar';
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
-const steps = ['Shipping address', 'Payment details', 'Review your order'];
-
-function getStepContent(step) {
-  switch (step) {
-    case 0:
-      return <AddressForm />;
-    case 1:
-      return <PaymentForm />;
-    case 2:
-      return <Review />;
-    default:
-      throw new Error('Unknown step');
-  }
-}
-
-const theme = createTheme();
 
 export default function Checkout() {
-  const [activeStep, setActiveStep] = React.useState(0);
 
-  const handleNext = () => {
-    setActiveStep(activeStep + 1);
-  };
+  const location = useLocation();
+  const history = useHistory();
 
-  const handleBack = () => {
-    setActiveStep(activeStep - 1);
-  };
 
+  const [payment, setPayment] = useState([{
+    paymentmethod: ""
+  }]);
+  const [fetched, setFetched] = useState(false);
+  const [data,setData] = useState([{}]);
+  const [checkout,setCheckout] = useState(false);
+
+  useEffect(() => {
+    
+    if (!fetched){
+        fetch(`/getpayments?username=${location.state.user}`).then(
+        res => res.json()
+        ).then(
+        data => {
+            setData(data)
+            console.log(data);
+            setFetched(true);
+        }
+        )
+    }
+
+    if (checkout) {
+      fetch(`/checkout?username=${location.state.user}&pay=${payment.paymentmethod}`).then(
+        res => res.json()
+        ).then(
+        data => {
+          history.push({
+            pathname: `/order`,
+            state: {
+              user: location.state.user
+            }});
+        }
+        )
+    }
+  }, [checkout])
+  if (typeof location.state === 'undefined') {
+    alert('You are not logged in');
+    return <Redirect to='/login'/>
+  }
+  const onChangeHandler = (e) => {
+    e.preventDefault();
+      setPayment({
+        ...payment,
+        [e.target.name]: e.target.value
+      })
+    }
+
+    const onClickHandler = () => {
+      console.log("laaa")
+      setCheckout(true);
+    }
+  
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <AppBar
-        position="absolute"
-        color="default"
-        elevation={0}
-        sx={{
-          position: 'relative',
-          borderBottom: (t) => `1px solid ${t.palette.divider}`,
-        }}
-      >
-        <Toolbar>
-          <Typography variant="h6" color="inherit" noWrap>
-            Company name
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
-        <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
-          <Typography component="h1" variant="h4" align="center">
-            Checkout
-          </Typography>
-          <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
-            {steps.map((label) => (
-              <Step key={label}>
-                <StepLabel>{label}</StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-          <React.Fragment>
-            {activeStep === steps.length ? (
-              <React.Fragment>
-                <Typography variant="h5" gutterBottom>
-                  Thank you for your order.
-                </Typography>
-                <Typography variant="subtitle1">
-                  Your order number is #2001539. We have emailed your order
-                  confirmation, and will send you an update when your order has
-                  shipped.
-                </Typography>
-              </React.Fragment>
-            ) : (
-              <React.Fragment>
-                {getStepContent(activeStep)}
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  {activeStep !== 0 && (
-                    <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
-                      Back
-                    </Button>
-                  )}
+    <div>
+    <Navbar user={location.state.user} cartItems={location.state.cartItems}/>
+      {typeof data.payment_methods === 'undefined' ? (
+          <p>Loading...</p>
+      ) : (
+        <div>
+    <Grid container sx={{marginBottom: '20px'}}>
+    <h1>Choose a Payment Method</h1>
+    </Grid>
+    <Grid container sx={{marginBottom: '20px'}}>
+        <Grid item xs={4}  md={3} lg={2} >
+          <FormControl fullWidth>
+            <InputLabel id="payment-method">Payment Method</InputLabel>
+            <Select
+              labelId="payment-method"
+              id="payment-method"
+              label="Payment Method"
+              onChange={onChangeHandler}
+              name="paymentmethod">
 
-                  <Button
-                    variant="contained"
-                    onClick={handleNext}
-                    sx={{ mt: 3, ml: 1 }}
-                  >
-                    {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
-                  </Button>
-                </Box>
-              </React.Fragment>
-            )}
-          </React.Fragment>
-        </Paper>
-        <Copyright />
-      </Container>
-    </ThemeProvider>
-  );
+              {data.payment_methods.map((paymet) => (
+                <MenuItem value={paymet.payment_method_id}>Card: **** **** **** {paymet.card_number.substring(12)}, exp: {paymet.exp_date}</MenuItem>
+                ))}
+              
+            </Select>
+          </FormControl>
+          <Grid> <h1> </h1>
+          </Grid>
+        
+          <Button onClick={onClickHandler} variant="contained">Checkout</Button>
+                
+
+        </Grid>
+      
+      </Grid>
+      </div>
+      )
+      }
+    </div>
+);
 }

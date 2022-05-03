@@ -16,8 +16,8 @@ import SearchResults from "./Search/SearchResults";
 import Group from "./Group/Group";
 import GroupPosts from "./Group/GroupPosts";
 import UploadProductPage from "./Product/UploadProduct";
-
-
+import Checkout from "./Cart/Checkout"
+import Order from "./Cart/Order"
 export default function Components() {
   return (
     <Router>
@@ -33,6 +33,8 @@ export default function Components() {
         <Route path="/groups" exact component={Group} />
         <Route path="/groups/:group_id" component={GroupPosts} />
         <Route path="/upload/product" component={UploadProductPage} />
+        <Route path="/checkout" component={Checkout} />
+        <Route path="/order" component={Order} />
         <Redirect to="/login" />
       </Switch>
     </Router>
