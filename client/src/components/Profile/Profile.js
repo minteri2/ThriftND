@@ -120,17 +120,17 @@ export default function ProfilePage() {
         </Grid>
         
         {(data.user.username == location.state.user) ? (
-        <Link className='links' to={{
-          pathname: `/upload/product`,
-          state: {
-            user: username
-          }}}>
-      
-            <Button variant="contained">Upload Product</Button>
-            <Grid item xs={12}>
-          <h2> </h2>
-         </Grid>
-          </Link>
+          <Grid item xs>
+            <Typography variant='h6'>Your Balance: ${data.user.balance.toFixed(2)}</Typography>
+            <Link className='links' to={{
+              pathname: `/upload/product`,
+              state: {
+                user: username
+              }}}>
+          
+                <Button variant="contained">Upload Product</Button>
+              </Link>
+          </Grid>
         ) : (
               <Button variant="contained" onClick={onClickHandler} >Chat</Button>
         )}

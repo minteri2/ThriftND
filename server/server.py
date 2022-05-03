@@ -3,8 +3,8 @@ from flask import request
 import cx_Oracle
 
 
-# cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\maint\Documents\AdvDb\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
-cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\erome\Downloads\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
+cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\maint\Documents\AdvDb\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
+# cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\erome\Downloads\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
 
 conn = cx_Oracle.connect('minteri2/minteri2@18.205.219.249/xe') # if needed, place an 'r' before any parameter in order to address special characters such as '\'. For example, if your user name contains '\', you'll need to place 'r' before the user name: user=r'User Name'
 c = conn.cursor()
@@ -665,6 +665,36 @@ def search():
     groups.append(group)
   data['groups'] = groups
   
+  return data
+
+@app.route("/orders")
+def orders():
+  data = {}
+  username = request.args.get('username')
+  query =  """
+        SELECT get_order_items('""" + str(username) + """')
+        FROM dual"""
+  c.execute(query)
+
+  cursor, = c.fetchone()
+  data['products'] = []
+  for i in cursor:
+    print(i)
+    prod = {}
+    prod['rating'] = 0
+    # query = """
+    #     SELECT rating
+    #     FROM review
+    #     WHERE prod_id=""" + str(i[0])
+    # c.execute(query)
+    # for y in c:
+    #   prod['rating'] = y[0]
+    prod['prod_name'] = i[1]
+    prod['price'] = i[2]
+    prod['png_file'] = str(i[3])
+    prod['order'] = str(i[4])
+    data['products'].append(prod)
+
   return data
 
 if __name__ == "__main__":
