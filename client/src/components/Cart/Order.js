@@ -91,12 +91,12 @@ export default function Order() {
           
           //sx={{ bgcolor: 'primary.main' }}
         >
-          <Grid container xs={12} md={7} justifyContent="space-evenly" sx={{borderRight: 'solid',
+          <Grid container xs={12}   sx={{borderRight: 'solid',
                 height: 'fit-content'}}>
 
           
             <Grid container 
-              xs={8}
+              xs={10}
               justifyContent="flex-start"
               direction="column"
               alignItems="left"
@@ -128,16 +128,17 @@ export default function Order() {
                       marginBottom: '20px',
                       }}
                     >
-                      <Grid item xs={12} md={8}>
+                      {/* <Grid item xs={12} md={8}> */}
                         <ImageListItem key={product.png_file}>
                           <img
                             src={`${product.png_file}`}
+                            style={{height:300}}
                             srcSet={`${product.png_file}?w=248&fit=crop&auto=format&dpr=2 2x`}
                             alt={product.prod_name}
                             loading="lazy"
                           />
                         </ImageListItem> 
-                      </Grid>
+                      {/* </Grid> */}
                       <Grid container xs  rowSpacing={1} justifyContent='center' sx={{alignContent: 'center'}}>
                         <Grid item xs={12}>
                           <Typography sx={{fontWeight: 'bold'}} variant="h5" align="center">{product.prod_name}</Typography>

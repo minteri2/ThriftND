@@ -27,6 +27,7 @@ import { useState, useEffect } from "react";
 
 export default function CreateGroup() {
     const location = useLocation();
+    const history = useHistory();
 
     const [newGroup, setNewGroup] = useState({
         groupname: "",
@@ -57,8 +58,12 @@ export default function CreateGroup() {
                 res => res.json()
               ).then(
                 data => {
-                  return data
-                  console.log(data);
+                  alert('Group has been created');
+                  history.push({
+                    pathname: `/groups`,
+                    state: {
+                      user: location.state.user
+                    }});
                 }
               )
         }
