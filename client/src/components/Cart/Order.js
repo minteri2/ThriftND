@@ -26,7 +26,9 @@ export default function Order() {
   const [fetched, setFetched] = useState(false);
   const [unreserve, setUnreserve] = useState(false);
   const [addReserved, setAddReserved] = useState(false);
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState(false);
+  const [messages, setMessages] = useState();
+
 
   useEffect(() => {
     if (!fetched){
@@ -37,26 +39,31 @@ export default function Order() {
           console.log(data);
           setProds(data)
           setFetched(true);
+          const mensajes = []
+          data.products.map(() => {
+            mensajes.push('');
+          })
+          setMessages(mensajes);
       }
       )
   }
 
-  // if (checkout) {
-  //   fetch(`/checkout?username=${location.state.user}&pay=${payment.paymentmethod}`).then(
-  //     res => res.json()
-  //     ).then(
-  //     data => {
-  //       alert('Congrats! Your order has been placed');
-  //       history.push({
-  //         pathname: `/order`,
-  //         state: {
-  //           user: location.state.user
-  //         }});
-  //     }
-  //     )
-  // }
+  if (rating) {
+    fetch(`/addReview?username=${location.state.user}&rating=${rating.rating}&mess=${messages[rating.num]}&prod_id=${rating.prod_id}`).then(
+      res => res.json()
+      ).then(
+      data => {
+        const prod_copy = {... rating};
+        prod_copy.message = messages[rating.num];
+        const prods_copy = prods.products.slice()
+        prods_copy.splice(rating.num,1,prod_copy);
+        setProds({'products': prods_copy});
+        setRating(false);
+      }
+      )
+  }
 
-  }, [])
+  }, [rating])
 
 
 
@@ -71,7 +78,20 @@ export default function Order() {
     const prods_copy = prods.products.slice()
     prods_copy.splice(i,1,prod_copy);
     setProds({'products': prods_copy});
+    console.log(product.message)
+  }
 
+  const onChangeMessageHandler = (i, e) => {
+    const messages_copy = messages.slice()
+    messages_copy.splice(i,1,e.target.value);
+    setMessages(messages_copy);
+  }
+
+  const onClickReviewHandler = (product, i) => {
+    setRating({
+      ...product,
+      'num': i
+    });
   }
 
   return (
@@ -91,7 +111,7 @@ export default function Order() {
           
           //sx={{ bgcolor: 'primary.main' }}
         >
-          <Grid container xs={12} md={7} justifyContent="space-evenly" sx={{borderRight: 'solid',
+          <Grid container xs={12} justifyContent="space-evenly" sx={{
                 height: 'fit-content'}}>
 
           
@@ -128,30 +148,65 @@ export default function Order() {
                       marginBottom: '20px',
                       }}
                     >
-                      <Grid item xs={12} md={8}>
+                      {/* <Grid item xs={12} md={8}> */}
                         <ImageListItem key={product.png_file}>
                           <img
                             src={`${product.png_file}`}
+                            style={{height:300}}
                             srcSet={`${product.png_file}?w=248&fit=crop&auto=format&dpr=2 2x`}
                             alt={product.prod_name}
                             loading="lazy"
                           />
                         </ImageListItem> 
-                      </Grid>
-                      <Grid container xs  rowSpacing={1} justifyContent='center' sx={{alignContent: 'center'}}>
+                      {/* </Grid> */}
+                      <Grid container xs  rowSpacing={1} justifyContent='center' sx={{ alignContent: 'center'}}>
                         <Grid item xs={12}>
                           <Typography sx={{fontWeight: 'bold'}} variant="h5" align="center">{product.prod_name}</Typography>
                         </Grid>
                         <Grid item xs={12}>
                           <Typography variant="h6" align="center">${product.price.toFixed(2)}</Typography>
                         </Grid>
-                        <Grid container justifyContent="center" >
+                        {product.hasOwnProperty("message") ? (
+                          <div>
+                          <Grid container justifyContent="center" sx={{marginBottom:'10px'}}>
+                          <Rating
+                            name="simple-controlled"
+                            value={product.rating}
+                            readOnly
+                          />
+                          </Grid>
+                          <Grid container justifyContent="center" sx={{marginBottom:'10px'}}>
+                          
+                          <Typography  align="center">{product.message}</Typography>
+                          </Grid>
+                          </div>
+                        ) : (
+                          <div>
+                          <Grid container justifyContent="center" sx={{marginBottom:'10px'}}>
                         <Rating
                           name="simple-controlled"
                           value={product.rating}
                           onChange={(e,newValue) => {onChangeHandler(product, i,e,newValue)}}
                         />
                         </Grid>
+                        <Grid container justifyContent="center" sx={{marginBottom:'10px'}}>
+                        
+                          <TextField
+                            id="review_mess-input"
+                            label="Review Message"
+                            multiline
+                            name="message"
+                            // value={newPay.address}
+                            onChange={(e) => {onChangeMessageHandler(i,e)}}
+                          />
+                        </Grid>
+                        <Grid container justifyContent="center" >
+                        <Button variant="contained" onClick={() => {onClickReviewHandler(product, i)}}>Submit Review</Button>
+                          </Grid>
+                          </div>
+                        )}
+                        
+                        
                       </Grid>
             
                     </Grid>
@@ -162,8 +217,7 @@ export default function Order() {
                   </div>
                 ))}
               </ImageList>
-            </Grid>
-          </Grid>
+            </Grid>          </Grid>
           
         </Grid>
       )} 

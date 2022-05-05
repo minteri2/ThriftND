@@ -75,7 +75,7 @@ export default function Groups() {
                 <List>
 
                  {data.groups.map((curr_group) => (  
-                     <Link className='links' to={{
+                     <Link className='links' style={{color:'black'}}to={{
                         pathname: `/groups/${curr_group.group_id}`,
                         state: {
                           user: location.state.user

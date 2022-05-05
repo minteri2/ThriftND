@@ -20,6 +20,8 @@ app = Flask(__name__)
 
 @app.route("/login")
 def login():
+  c.callproc('del_reserv_time')
+  conn.commit()
   username = request.args.get('username')
   password = request.args.get('password')
   query =  """
@@ -39,6 +41,8 @@ def login():
 
 @app.route("/send")
 def send():
+  c.callproc('del_reserv_time')
+  conn.commit()
   username = request.args.get('username')
   chat_id = request.args.get('chat_id')
   mess = request.args.get('message')
@@ -66,6 +70,8 @@ def send():
 
 @app.route("/register")
 def register():
+  c.callproc('del_reserv_time')
+  conn.commit()
   username = request.args.get('username')
   fname = request.args.get('fname')
   lname = request.args.get('lname')
@@ -119,6 +125,8 @@ def register():
 
 @app.route("/cart")
 def products():
+  c.callproc('del_reserv_time')
+  conn.commit()
   username = request.args.get('username')
   query =  """
         SELECT prod_id
@@ -185,6 +193,8 @@ def products():
 
 @app.route("/addCart")
 def addCart():
+  c.callproc('del_reserv_time')
+  conn.commit()
   username = request.args.get('username')
   prod_id = request.args.get('prod_id')
   query =  """
@@ -202,6 +212,8 @@ def addCart():
 
 @app.route("/removeCart")
 def removeCart():
+  c.callproc('del_reserv_time')
+  conn.commit()
   username = request.args.get('username')
   prod_id = request.args.get('prod_id')
   query =  """
@@ -219,11 +231,13 @@ def removeCart():
 
 @app.route("/reserve")
 def reserve():
+  c.callproc('del_reserv_time')
+  conn.commit()
   username = request.args.get('username')
   prod_id = request.args.get('prod_id')
   query =  """
         INSERT INTO reservation
-        VALUES (""" + str(prod_id) + ",'" + str(username) + "',sysdate)"
+        VALUES ('""" + str(username) + "'," + str(prod_id) + ",sysdate)"
   try:
     c.execute(query)
     conn.commit()
@@ -236,6 +250,8 @@ def reserve():
 
 @app.route("/unreserve")
 def unreserve():
+  c.callproc('del_reserv_time')
+  conn.commit()
   prod_id = request.args.get('prod_id')
   query =  """
         DELETE FROM reservation
@@ -252,6 +268,8 @@ def unreserve():
 
 @app.route("/user")
 def user():
+  c.callproc('del_reserv_time')
+  conn.commit()
   data = {}
   username = request.args.get('user')
   query = """
@@ -301,6 +319,8 @@ def user():
 ###############GROUPS####################
 @app.route("/groups")
 def groups():
+  c.callproc('del_reserv_time')
+  conn.commit()
   username_input = request.args.get('username')
 
   query =  """
@@ -321,6 +341,8 @@ def groups():
 
 @app.route("/grouppost")
 def grouppost():
+  c.callproc('del_reserv_time')
+  conn.commit()
   group_id = request.args.get('group_id')
   username_input = request.args.get('username')
   query =  """
@@ -343,6 +365,8 @@ def grouppost():
 
 @app.route("/addpost")
 def addpost():
+  c.callproc('del_reserv_time')
+  conn.commit()
   username_input = request.args.get('username')
   group_id = request.args.get('group_id')
   post_desc = request.args.get('post_desc')
@@ -366,6 +390,8 @@ def addpost():
 
 @app.route("/join")
 def join():
+  c.callproc('del_reserv_time')
+  conn.commit()
   username_input = request.args.get('username')
   group_id = request.args.get('group_id')
   try:
@@ -380,6 +406,8 @@ def join():
 
 @app.route("/creategroup")
 def creategroup():
+  c.callproc('del_reserv_time')
+  conn.commit()
   groupname_input = request.args.get('groupname')
   groupdesc_input = request.args.get('groupdesc')
   groupcreator_input = request.args.get('username')
@@ -419,6 +447,8 @@ def creategroup():
 ###############CHATS################
 @app.route("/chats")
 def chats():
+  c.callproc('del_reserv_time')
+  conn.commit()
   username_input = request.args.get('username')
 
   query =  """
@@ -440,6 +470,8 @@ def chats():
   return data
 @app.route("/newchat")
 def newchat():
+  c.callproc('del_reserv_time')
+  conn.commit()
   username_1 = request.args.get('username_1')
   username_2 = request.args.get('username_2')
   try:
@@ -457,6 +489,8 @@ def newchat():
 
 @app.route("/chat")
 def chat():
+  c.callproc('del_reserv_time')
+  conn.commit()
   username_input = request.args.get('username')
   chat_id = request.args.get('chat_id')
   data = {}
@@ -477,6 +511,8 @@ def chat():
 
 @app.route("/product")
 def product():
+  c.callproc('del_reserv_time')
+  conn.commit()
   prod_id = request.args.get('prod_id')
   query = """
         SELECT *
@@ -522,6 +558,8 @@ def product():
 
 @app.route("/addProduct")
 def addProd():
+  c.callproc('del_reserv_time')
+  conn.commit()
   username = request.args.get('username')
   pname = request.args.get('prod_name')
   pdesc = request.args.get('prod_desc')
@@ -553,14 +591,16 @@ def addProd():
       
     return {'error': err.message}
   except:
-    return {'error':'error'}
+    return {'error':'Product name, category, and price required\nAge >= 0\nPrice > 0'}
 
 #############CHECHOUT################
 @app.route("/getpayments")
 def getpayments():
+  c.callproc('del_reserv_time')
+  conn.commit()
   data = {}
   username = request.args.get('username')
-  query = """SELECT pay_method_id, card_number, TO_CHAR(expiration_date, 'MM/YY') FROM payment_method where username = '"""+str(username)+"""'"""
+  query = """SELECT  pay_method_id, card_number, TO_CHAR(expiration_date, 'MM/YY') FROM payment_method where username = '"""+str(username)+"""'"""
   c.execute(query)
   data['payment_methods'] = []
   for i in c:
@@ -577,6 +617,8 @@ def getpayments():
 
 @app.route("/checkout")
 def checkout():
+  c.callproc('del_reserv_time')
+  conn.commit()
   data = {}
   username = request.args.get('username')
   pay_method = request.args.get('pay')
@@ -611,6 +653,8 @@ def checkout():
 
 @app.route("/search")
 def search():
+  c.callproc('del_reserv_time')
+  conn.commit()
   data = {}
   q = str(request.args.get('q'))
   query = """
@@ -669,6 +713,8 @@ def search():
 
 @app.route("/orders")
 def orders():
+  c.callproc('del_reserv_time')
+  conn.commit()
   data = {}
   username = request.args.get('username')
   query =  """
@@ -679,16 +725,17 @@ def orders():
   cursor, = c.fetchone()
   data['products'] = []
   for i in cursor:
-    print(i)
     prod = {}
     prod['rating'] = 0
-    # query = """
-    #     SELECT rating
-    #     FROM review
-    #     WHERE prod_id=""" + str(i[0])
-    # c.execute(query)
-    # for y in c:
-    #   prod['rating'] = y[0]
+    query = """
+        SELECT rating, review_desc
+        FROM review
+        WHERE prod_id=""" + str(i[0])
+    c.execute(query)
+    for y in c:
+      prod['rating'] = y[0]
+      prod['message'] = y[1]
+    prod['prod_id'] = i[0]
     prod['prod_name'] = i[1]
     prod['price'] = i[2]
     prod['png_file'] = str(i[3])
@@ -696,6 +743,74 @@ def orders():
     data['products'].append(prod)
 
   return data
+
+@app.route("/addPay")
+def addPay():
+  c.callproc('del_reserv_time')
+  conn.commit()
+  username = request.args.get('username')
+  card_num = request.args.get('card_num')
+  exp_date = request.args.get('exp_date')
+  card_name = request.args.get('card_name')
+  address = request.args.get('address')
+
+
+
+  
+  try:
+    c.callproc('add_pay',[username,int(card_num), exp_date, card_name, address])
+    conn.commit()
+    pay_id = c.callfunc('get_curr_pay',int)
+    return {'card': 
+    {
+      'payment_method_id': pay_id,
+      'card_number': card_num,
+      'exp_date': exp_date
+    }}
+  except cx_Oracle.IntegrityError as e:
+    err, = e.args
+    if err.code == 1:
+      return {'error': 'Failed to add method.'}
+    return {'error': 'All values are required \n '}
+
+@app.route("/addReview")
+def addReview():
+  c.callproc('del_reserv_time')
+  conn.commit()
+  username = request.args.get('username')
+  rating = request.args.get('rating')
+  message = request.args.get('mess')
+  prod_id = request.args.get('prod_id')
+
+
+  
+  try:
+    c.callproc('add_review',[username,int(rating), int(prod_id), message ])
+    conn.commit()
+    return {'success': 'success'}
+  except cx_Oracle.IntegrityError as e:
+    err, = e.args
+    if err.code == 1:
+      return {'error': 'Failed to add method.'}
+    return {'error': err.message}
+
+@app.route("/transferBalance")
+def transferBalance():
+  c.callproc('del_reserv_time')
+  conn.commit()
+  username = request.args.get('username')
+  pay_method = request.args.get('pay')
+
+  
+  try:
+    c.callproc('transfer_bal',[username,int(pay_method)])
+    conn.commit()
+    return {'success': 'success'}
+  except cx_Oracle.IntegrityError as e:
+    err, = e.args
+    if err.code == 1:
+      return {'error': 'Failed to add method.'}
+    return {'error': err.message}
 
 if __name__ == "__main__":
   app.run()
