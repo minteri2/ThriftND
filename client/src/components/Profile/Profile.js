@@ -120,17 +120,37 @@ export default function ProfilePage() {
         </Grid>
         
         {(data.user.username == location.state.user) ? (
-          <Grid item xs>
-            <Typography variant='h6'>Your Balance: ${data.user.balance.toFixed(2)}</Typography>
+          <Grid item xs sx={{marginBottom: '30px'}}>
+            <Typography variant='h6' align="center">Your Balance: ${data.user.balance.toFixed(2)}</Typography>
+            {data.user.balance > 0 && (
+              <Grid container justifyContent='center' sx={{marginBottom:'20px'}}>
+              <Link className='links' to={{
+                pathname: `/balance`,
+                state: {
+                  user: username
+                }}}>
+            
+                  <Button variant="contained">Transfer Balance</Button>
+                </Link>
+              </Grid>
+            )}
             <Link className='links' to={{
               pathname: `/upload/product`,
               state: {
                 user: username
               }}}>
           
-                <Button variant="contained">Upload Product</Button>
+                <Button sx={{marginRight: '20px'}} variant="contained">Upload Product</Button>
               </Link>
-          </Grid>
+              <Link className='links' to={{
+              pathname: `/order`,
+              state: {
+                user: username
+              }}}>
+          
+                <Button variant="outlined">Past Orders</Button>
+              </Link>
+              </Grid>
         ) : (
               <Button variant="contained" onClick={onClickHandler} >Chat</Button>
         )}

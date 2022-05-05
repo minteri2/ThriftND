@@ -38,7 +38,7 @@ export default function Chats() {
         res => res.json()
         ).then(
         data => {
-            console.log(activeChat);
+            console.log(data);
             setData(data)
             if (typeof location.state.chatUser !== 'undefined'){
                 setActiveChat({

@@ -157,22 +157,24 @@ export default function ProductPage() {
                 </Typography>
               </Grid>
               {prod.product.status === 0 ? (
-                <Grid container
-                justifyContent="flex-start"
-                direction="column"
-                alignItems="center"
-                rowSpacing={2}
-                sx={{
-                  marginTop: '5px'
-                }}>
+                <Grid container>
+              {prod.seller.username !== location.state.user && 
+              <Grid container
+              justifyContent="flex-start"
+              direction="column"
+              alignItems="center"
+              rowSpacing={2}
+              sx={{
+                marginTop: '5px'
+              }}>
                   <Grid item>
-                    <Button variant="outlined" onClick={onClickReserveHandler}>Reserve (24hr)</Button>        
+                    <Button variant="outlined" onClick={onClickReserveHandler}>Reserve (1hr)</Button>        
                   </Grid>
                   <Grid item>
                     <Button variant="contained" onClick={onClickAddHandler}>Add to Cart</Button> 
                   </Grid>
                 </Grid>
-              ) : (prod.product.status === 2 ? (
+                 } </Grid>) : (prod.product.status === 2 ? (
                 <Grid container>
                   { prod.hasOwnProperty("review") ? (
                     <Grid container
