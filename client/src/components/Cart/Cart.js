@@ -116,11 +116,11 @@ export default function Cart() {
   return (
     <div>
       <Navbar user={location.state.user} />
-      {typeof prods.products === 'undefined' ? (
+      {typeof prods.products === 'undefined' || prods.products.length === 0 ? (
         <Grid>
-          <h1>Shopping Cart:</h1>
-          <p>Your cart is empty!</p>
-        </Grid>
+        <h1>Shopping Cart:</h1>
+        <p>Your cart is empty!</p>
+      </Grid>
       ) : (
         <Grid
           container
@@ -159,11 +159,13 @@ export default function Cart() {
             >
               <h3>Your total is: ${total.toFixed(2)}</h3>
               
+              
               <Link to={{
                 pathname: `/checkout`,
                 state: {
                   user: location.state.user
-                }}}>
+                }}}
+                className='links'>
                 <Button variant="contained">Checkout</Button>
               </Link>    
               
@@ -223,6 +225,25 @@ export default function Cart() {
               </ImageList>
             </Grid>
           </Grid>
+          </Grid>
+          
+          )}
+          {typeof prods.products === 'undefined' || prods.reservations.length === 0 ? (
+            <Grid>
+            <h1>Reserved Items:</h1>
+            <p>You have no reserved items!</p>
+          </Grid>
+          ) : (
+          <Grid
+          container
+          justifyContent="space-around"
+          alignItems="left"
+          direction="row"
+          
+          //sx={{ bgcolor: 'primary.main' }}
+        >
+          <Grid container xs={12}   sx={{borderRight: 'solid',
+                height: 'fit-content'}}></Grid>
           <Grid container 
               xs={8}
               justifyContent="flex-start"
@@ -303,6 +324,7 @@ export default function Cart() {
               </ImageList>
             </Grid>
           </Grid>
+          
       )} 
     </div>
   );

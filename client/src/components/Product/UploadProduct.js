@@ -22,7 +22,6 @@ export default function UploadProductPage() {
   const [pic, setPic] = useState(false)
   const [add, setAdd] = useState(false);
   const [prod, setProd] = useState({
-    photo: "",
     prodName: "",
     prodDesc: "",
     category: "",
@@ -44,19 +43,25 @@ export default function UploadProductPage() {
   //   }
 
     if (pic) {
-      uploadPic(prod.photo).then(
-        data => {
-          const file = data.get("photo");
-          const url = file.url();
-          setProd({
-            ...prod,
-            "photo": url
-          })
-          setPic(false);
-        });
+      if (prod.photo) {
+        uploadPic(prod.photo).then(
+          data => {
+            const file = data.get("photo");
+            const url = file.url();
+            setProd({
+              ...prod,
+              "photo_url": url
+            })
+            setPic(false);
+          });
+      }
+      else {
+        alert('Missing image file');
+        setPic(false);
+      }
     }
 
-    if (add && !pic) {
+    if (add && !pic && prod.photo) {
       uploadProduct(prod, location.state.user).then(
         data => {
           if(data.hasOwnProperty("error")) {

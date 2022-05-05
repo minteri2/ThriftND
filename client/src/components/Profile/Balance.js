@@ -22,13 +22,12 @@ export default function Checkout() {
   const history = useHistory();
 
 
-  const [payment, setPayment] = useState([{
-    paymentmethod: ""
-  }]);
+  const [payment, setPayment] = useState(false);
   const [fetched, setFetched] = useState(false);
   const [data,setData] = useState([{}]);
   const [checkout,setCheckout] = useState(false);
   const [newPay, setNewPay] = useState({
+    cardNum: "",
     expDate:"",
     name: "",
     address: ""
@@ -48,14 +47,14 @@ export default function Checkout() {
         )
     }
 
-    if (checkout) {
-      fetch(`/checkout?username=${location.state.user}&pay=${payment.paymentmethod}`).then(
+    if (payment && checkout) {
+      fetch(`/transferBalance?username=${location.state.user}&pay=${payment.paymentmethod}`).then(
         res => res.json()
         ).then(
         data => {
-          alert('Congrats! Your order has been placed');
+          alert('You have successfully transferred your balance!');
           history.push({
-            pathname: `/order`,
+            pathname: `/user/${location.state.user}`,
             state: {
               user: location.state.user
             }});
@@ -64,32 +63,25 @@ export default function Checkout() {
     }
 
     if (add) {
-      if (newPay.cardNum) {
-        fetch(`/addPay?username=${location.state.user}&card_num=${newPay.cardNum}&exp_date=${newPay.expDate}&card_name=${newPay.name}&address=${newPay.address}`).then(
-          res => res.json()
-          ).then(
-          cards => {
-            const cards_copy = data.payment_methods.slice();
-            cards_copy.push(cards.card);
-            setData({
-              ...data,
-              'payment_methods': cards_copy
-            })
-            setAdd(false);
-            setNewPay({
-              cardNum: "",
-              expDate:"",
-              name: "",
-              address: ""
-            })
-          }
-          )
-      }
-      else {
-        alert('Card Number is Required');
-        setAdd(false);
-      }
-      
+      fetch(`/addPay?username=${location.state.user}&card_num=${newPay.cardNum}&exp_date=${newPay.expDate}&card_name=${newPay.name}&address=${newPay.address}`).then(
+        res => res.json()
+        ).then(
+        cards => {
+          const cards_copy = data.payment_methods.slice();
+          cards_copy.push(cards.card);
+          setData({
+            ...data,
+            'payment_methods': cards_copy
+          })
+          setAdd(false);
+          setNewPay({
+            cardNum: "",
+            expDate:"",
+            name: "",
+            address: ""
+          })
+        }
+        )
     }
   }, [checkout, add])
   if (typeof location.state === 'undefined') {
@@ -217,7 +209,7 @@ export default function Checkout() {
           <Button onClick={onClickAddHandler} variant="contained">Add Payment Method</Button>
           </Grid>
         ) : (
-          <Button onClick={onClickHandler} variant="contained">Checkout</Button>
+          <Button onClick={onClickHandler} variant="contained">Transfer Balance</Button>
         )}
                 
 
