@@ -111,12 +111,13 @@ export default function Order() {
           
           //sx={{ bgcolor: 'primary.main' }}
         >
+
           <Grid container xs={12} justifyContent="space-evenly" sx={{
                 height: 'fit-content'}}>
 
           
             <Grid container 
-              xs={8}
+              xs={10}
               justifyContent="flex-start"
               direction="column"
               alignItems="left"
