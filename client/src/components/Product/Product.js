@@ -9,6 +9,8 @@ import {
 } from '@mui/material';
 import Navbar from '../Navbar/Navbar';
 import { addToCart, reserveItem } from "../Cart/CartService";
+import axios from 'axios';
+
 
 export default function ProductPage() {
   const location = useLocation();
@@ -23,15 +25,12 @@ export default function ProductPage() {
 
   useEffect(() => {
     if (!fetched) {
-      fetch(`/product?prod_id=${product_id}`).then(
-        res => res.json()
-      ).then(
-        data => {
-          setProd(data)
+      axios.get(`http://18.205.219.249:5000/product?prod_id=${product_id}`).then(
+        res => {
+          setProd(res.data)
           setFetched(true);
-          console.log(data);
         }
-      )
+      );
     }
 
     if (add) {

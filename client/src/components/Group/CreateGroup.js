@@ -23,6 +23,8 @@ import SendIcon from '@mui/icons-material/Send';
 import { useParams, useLocation, Redirect, Link } from "react-router-dom";
 import Navbar from '../Navbar/Navbar';
 import { useState, useEffect } from "react";
+import axios from 'axios';
+
 
 
 export default function CreateGroup() {
@@ -54,10 +56,8 @@ export default function CreateGroup() {
     useEffect(() => {
 
         if (add) {
-            fetch(`/creategroup?groupname=${newGroup.groupname}&groupdesc=${newGroup.groupdesc}&username=${location.state.user}`).then(
-                res => res.json()
-              ).then(
-                data => {
+          axios.get(`http://18.205.219.249:5000/creategroup?groupname=${newGroup.groupname}&groupdesc=${newGroup.groupdesc}&username=${location.state.user}`).then(
+                res => {
                   alert('Group has been created');
                   history.push({
                     pathname: `/groups`,

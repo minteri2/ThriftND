@@ -20,6 +20,8 @@ import SendIcon from '@mui/icons-material/Send';
 import { useParams, useLocation, Redirect } from "react-router-dom";
 import Navbar from '../Navbar/Navbar';
 import { useState, useEffect } from "react";
+import axios from 'axios';
+
 
 export default function Chats() {
   const location = useLocation();
@@ -34,12 +36,9 @@ export default function Chats() {
   useEffect(() => {
     
     if (!data){
-        fetch(`/chats?username=${location.state.user}`).then(
-        res => res.json()
-        ).then(
-        data => {
-            console.log(data);
-            setData(data)
+        axios.get(`http://18.205.219.249:5000/chats?username=${location.state.user}`).then(
+        res => {
+            setData(res.data)
             if (typeof location.state.chatUser !== 'undefined'){
                 setActiveChat({
                     'name': location.state.chatName
@@ -52,29 +51,25 @@ export default function Chats() {
     }
 
     if(changeChat){
-      fetch(`/chat?username=${location.state.user}&chat_id=${changeChat}`).then(
-        res => res.json()
-           ).then(
-        mess => {
+        axios.get(`http://18.205.219.249:5000/chat?username=${location.state.user}&chat_id=${changeChat}`).then(
+        res => {
             console.log('yes')
           setActiveChat({
               ...activeChat,
-              ...mess,
+              ...res.data,
               'chat_id': changeChat
           });
         setChangeChat(false);
         
         }
-      )
+           )
     }
 
     if (message && send) {
-        fetch(`/send?username=${location.state.user}&chat_id=${activeChat.chat_id}&message=${message}`).then(
-            res => res.json()
-            ).then(
-              data => {
+        axios.get(`http://18.205.219.249:5000/send?username=${location.state.user}&chat_id=${activeChat.chat_id}&message=${message}`).then(
+            res => {
                 const chat_copy = activeChat.messages.slice();
-                chat_copy.push(data.message);
+                chat_copy.push(res.data.message);
                 setActiveChat({
                     ... activeChat,
                     'messages': chat_copy

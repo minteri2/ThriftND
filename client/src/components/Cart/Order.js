@@ -16,6 +16,8 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import { removeFromCart, addToCart, removeReserved } from './CartService';
+import axios from 'axios';
+
 
 export default function Order() {
   const location = useLocation();
@@ -32,27 +34,22 @@ export default function Order() {
 
   useEffect(() => {
     if (!fetched){
-      fetch(`/orders?username=${location.state.user}`).then(
-      res => res.json()
-      ).then(
-      data => {
-          console.log(data);
-          setProds(data)
-          setFetched(true);
-          const mensajes = []
-          data.products.map(() => {
-            mensajes.push('');
-          })
-          setMessages(mensajes);
-      }
+      axios.get(`http://18.205.219.249:5000/orders?username=${location.state.user}`).then(
+      res => {
+        setProds(res.data)
+        setFetched(true);
+        const mensajes = []
+        res.data.products.map(() => {
+          mensajes.push('');
+        })
+        setMessages(mensajes);
+    }
       )
   }
 
   if (rating) {
-    fetch(`/addReview?username=${location.state.user}&rating=${rating.rating}&mess=${messages[rating.num]}&prod_id=${rating.prod_id}`).then(
-      res => res.json()
-      ).then(
-      data => {
+    axios.get(`http://18.205.219.249:5000/addReview?username=${location.state.user}&rating=${rating.rating}&mess=${messages[rating.num]}&prod_id=${rating.prod_id}`).then(
+      res => {
         const prod_copy = {... rating};
         prod_copy.message = messages[rating.num];
         const prods_copy = prods.products.slice()

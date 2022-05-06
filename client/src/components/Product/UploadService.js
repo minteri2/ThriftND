@@ -1,4 +1,6 @@
 import Parse from "parse";
+import axios from 'axios';
+
 export const uploadPic = (file) => {
   const prod_object = new Parse.Object.extend("Products")
   const new_prod = new prod_object();
@@ -15,9 +17,6 @@ export const uploadPic = (file) => {
 };
 
 export const uploadProduct = (prod, username) => {
-  return fetch(`/addProduct?prod_id=0&username=${username}&prod_name=${prod.prodName}&prod_desc=${prod.prodDesc}&category=${prod.category}&price=${prod.price}&age=${prod.age}&photo=${prod.photo}`).then(
-    res => res.json()
-  ).then(
-    data => {return data}
-  );
+  return axios.get(`http://18.205.219.249:5000/addProduct?prod_id=0&username=${username}&prod_name=${prod.prodName}&prod_desc=${prod.prodDesc}&category=${prod.category}&price=${prod.price}&age=${prod.age}&photo=${prod.photo}`).then(
+    res => {return res.data;});
 }

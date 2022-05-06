@@ -11,6 +11,12 @@ import { Identity } from "@mui/base";
 import UserResults from "./UserResults";
 import ProductResults from "./ProductResults";
 import GroupResults from "./GroupResults";
+import axios from 'axios';
+export const signUp = (newUser) => {
+  return axios.get(`http://18.205.219.249:5000/register?username=${newUser.username}&fname=${newUser.firstName}&lname=${newUser.lastName}&email=${newUser.email}&phone=${newUser.phone}&password=${newUser.password}`).then(
+    res => {return res.data;}
+  )
+}
 
  
 export default function SearchResults() {
@@ -21,14 +27,11 @@ export default function SearchResults() {
   const [data, setData] = useState([{}]);
  
   useEffect(() => {
-    fetch(`/search?q=${query}`).then(
-      res => res.json()
-    ).then(
-      data => {
-        setData(data)
-        console.log(data)
+    axios.get(`http://18.205.219.249:5000/search?q=${query}`).then(
+      res => {
+        setData(res.data);
       }
-    )
+    );
   }, [query])
  
   if (typeof location.state === 'undefined') {
