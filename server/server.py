@@ -1,16 +1,18 @@
 from flask import Flask
 from flask import request
+from flask_cors import CORS
 import cx_Oracle
 
 
 #cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\maint\Documents\AdvDb\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
-cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\erome\Downloads\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
+# cx_Oracle.init_oracle_client(lib_dir=r"C:\Users\erome\Downloads\instantclient-basic-windows.x64-21.3.0.0.0\instantclient_21_3")
 
 conn = cx_Oracle.connect('minteri2/minteri2@18.205.219.249/xe') # if needed, place an 'r' before any parameter in order to address special characters such as '\'. For example, if your user name contains '\', you'll need to place 'r' before the user name: user=r'User Name'
 c = conn.cursor()
 
 
 app = Flask(__name__)
+CORS(app)
 # class DataStore():
 #     user = None
 
