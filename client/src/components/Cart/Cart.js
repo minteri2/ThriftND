@@ -18,6 +18,9 @@ import IconButton from '@mui/material/IconButton';
 import { removeFromCart, addToCart, removeReserved } from './CartService';
 import '../../App.css';
 
+import axios from 'axios';
+
+
 export default function Cart() {
   const location = useLocation();
 
@@ -31,12 +34,8 @@ export default function Cart() {
   useEffect(() => {
 
       if (!remove && !unreserve && !addReserved) {
-        fetch(`/cart?username=${username}`).then(
-          res => res.json()
-        ).then(
-          data => {
-            setProds(data)
-          }
+        axios.get(`http://18.205.219.249:5000/cart?username=${username}`).then(
+          res => {setProds(res.data);}
         )
       }
 

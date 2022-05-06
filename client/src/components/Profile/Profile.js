@@ -9,6 +9,8 @@ import {
 import Navbar from '../Navbar/Navbar';
 import ProductList from '../Product/ProductList';
 import '../../App.css';
+import axios from 'axios';
+
 
 export default function ProfilePage() {
   const location = useLocation();
@@ -26,31 +28,27 @@ export default function ProfilePage() {
   }
   useEffect(() => {
     if (!fetched) {
-      fetch(`/user?user=${username}`).then(
-        res => res.json()
-      ).then(
-        data => {
-          setData(data);
+      axios.get(`http://18.205.219.249:5000/user?user=${username}`).then(
+        res => {
+          setData(res.data);
           setFetched(true);
         }
-      )
+      );
     }
     
     if(newChat){
-      fetch(`/newchat?username_1=${location.state.user}&username_2=${data.user.username}`).then(
-        res => res.json()
-      ).then(
-        chatData => {
+      axios.get(`http://18.205.219.249:5000/newchat?username_1=${location.state.user}&username_2=${data.user.username}`).then(
+        res => {
           const full_name = data.user.first_name + " " + data.user.last_name;
           history.push({
             pathname: '/chats',
             state: {
               user: location.state.user,
-              chatUser: chatData.success,
+              chatUser: res.data.success,
               chatName: full_name
             }});
         }
-      )
+      );
       setNewChat(false)
     }
   }, [username, newChat])

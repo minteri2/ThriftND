@@ -14,6 +14,9 @@ import Typography from '@mui/material/Typography';
 import { useParams, useLocation, Redirect, useHistory } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Navbar from '../Navbar/Navbar';
+import axios from 'axios';
+
+
 
 
 export default function Checkout() {
@@ -38,21 +41,17 @@ export default function Checkout() {
   useEffect(() => {
     
     if (!fetched){
-        fetch(`/getpayments?username=${location.state.user}`).then(
-        res => res.json()
-        ).then(
-        data => {
-            setData(data);
-            setFetched(true);
-        }
-        )
+      axios.get(`http://18.205.219.249:5000/getpayments?username=${location.state.user}`).then(
+        res => {
+          setData(res.data);
+          setFetched(true);
+      })
+        
     }
 
     if (checkout) {
-      fetch(`/checkout?username=${location.state.user}&pay=${payment.paymentmethod}`).then(
-        res => res.json()
-        ).then(
-        data => {
+      axios.get(`http://18.205.219.249:5000/checkout?username=${location.state.user}&pay=${payment.paymentmethod}`).then(
+        res => {
           alert('Congrats! Your order has been placed');
           history.push({
             pathname: `/order`,
@@ -65,12 +64,10 @@ export default function Checkout() {
 
     if (add) {
       if (newPay.cardNum) {
-        fetch(`/addPay?username=${location.state.user}&card_num=${newPay.cardNum}&exp_date=${newPay.expDate}&card_name=${newPay.name}&address=${newPay.address}`).then(
-          res => res.json()
-          ).then(
-          cards => {
+        axios.get(`http://18.205.219.249:5000/addPay?username=${location.state.user}&card_num=${newPay.cardNum}&exp_date=${newPay.expDate}&card_name=${newPay.name}&address=${newPay.address}`).then(
+          res => {
             const cards_copy = data.payment_methods.slice();
-            cards_copy.push(cards.card);
+            cards_copy.push(res.data.card);
             setData({
               ...data,
               'payment_methods': cards_copy

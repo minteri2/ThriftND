@@ -21,6 +21,8 @@ import { useParams, useLocation, Redirect, Link } from "react-router-dom";
 import Navbar from '../Navbar/Navbar';
 import { useState, useEffect } from "react";
 import '../../App.css';
+import axios from 'axios';
+
 
 export default function Groups() {
   const location = useLocation();
@@ -31,16 +33,12 @@ export default function Groups() {
 
   useEffect(() => {
   
-        fetch(`/groups?username=${location.state.user}`).then(
-        res => res.json()
-        ).then(
-        data => {
-            setData(data);
-            setFetched(true);
-            console.log(data);
+    axios.get(`http://18.205.219.249:5000/groups?username=${location.state.user}`).then(
+        res => {
+          setData(res.data);
+          setFetched(true);
 
-        }
-        
+      }
         )
 
     

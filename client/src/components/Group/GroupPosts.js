@@ -20,6 +20,8 @@ import SendIcon from '@mui/icons-material/Send';
 import { useParams, useLocation, Redirect, Link } from "react-router-dom";
 import Navbar from '../Navbar/Navbar';
 import { useState, useEffect } from "react";
+import axios from 'axios';
+
 
 export default function GroupPosts() {
 
@@ -36,29 +38,22 @@ export default function GroupPosts() {
   useEffect(() => {
     
     if (!fetched){
-        fetch(`/grouppost?group_id=${group_id}&username=${location.state.user}`).then(
+        axios.get(`http://18.205.219.249:5000/grouppost?group_id=${group_id}&username=${location.state.user}`).then(
             
-        res => {console.log(res);
-        return res.json();}
-        ).then(
-        data => {
-            setPostData(data);
-            console.log(data);
+        res => {
+            setPostData(res.data);
             setFetched(true);
 
         }
-        
         )
     }
 
     if (send) {
         // sendMessage()
-        fetch(`/addpost?username=${location.state.user}&group_id=${group_id}&post_desc=${post}`).then(
-            res => res.json()
-            ).then(
-              data => {
+        axios.get(`http://18.205.219.249:5000/addpost?username=${location.state.user}&group_id=${group_id}&post_desc=${post}`).then(
+            res => {
                 const posts_copy = postData.posts.slice()
-                posts_copy.push(data.post);
+                posts_copy.push(res.data.post);
                 setPostData({
                     ... postData,
                     'posts': posts_copy

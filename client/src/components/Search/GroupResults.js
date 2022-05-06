@@ -10,6 +10,8 @@ import { Link } from 'react-router-dom';
 import "../../App.css";
 import { useParams, useLocation, Redirect, useHistory } from "react-router-dom";
 import { useState, useEffect } from "react";
+import axios from 'axios';
+
  
  
 export default function GroupResults({ cartItems, authUser, groups }) {
@@ -26,17 +28,15 @@ export default function GroupResults({ cartItems, authUser, groups }) {
     
     
     if (join) {
-        fetch(`/join?username=${authUser}&group_id=${join}`).then(
-        res => res.json()
-        ).then(
-            data => {
-            history.push({
-            pathname: `/groups/${join}`,
-            state: {
-                user: authUser
-            }});
-            }
-        )
+      axios.get(`http://18.205.219.249:5000/join?username=${authUser}&group_id=${join}`).then(
+        res => {
+          history.push({
+          pathname: `/groups/${join}`,
+          state: {
+              user: authUser
+          }});
+          }
+        );
     }
     
 }, [join])
