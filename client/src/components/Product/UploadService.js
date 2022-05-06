@@ -17,6 +17,6 @@ export const uploadPic = (file) => {
 };
 
 export const uploadProduct = (prod, username) => {
-  return axios.get(`http://18.205.219.249:5000/addProduct?prod_id=0&username=${username}&prod_name=${prod.prodName}&prod_desc=${prod.prodDesc}&category=${prod.category}&price=${prod.price}&age=${prod.age}&photo=${prod.photo}`).then(
+  return axios.get(`http://18.205.219.249:5000/addProduct?prod_id=0&username=${username}&prod_name=${prod.prodName}&prod_desc=${prod.prodDesc}&category=${prod.category}&price=${prod.price}&age=${prod.age}&photo=${prod.photo_url}`).then(
     res => {return res.data;});
 }
